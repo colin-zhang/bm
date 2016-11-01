@@ -82,11 +82,11 @@ dev_daemon_init(const char *daemon_name)
         return 1;
     }
 
-    if (daemon(1, 1)) {
+/*    if (daemon(1, 1)) {
         fprintf(stderr, "can't daemonize.\n");
         return 1;
     }
-
+*/
     pid = dev_pid_output(daemon_name);
     if (pid == 0) {
         return 1;

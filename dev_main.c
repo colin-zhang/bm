@@ -14,6 +14,43 @@
 
 //#include "uware_def.h"
 //#include "kernel/uware_netlink.h"
+/*
+
+    int session_id;
+    int slot_id;
+    int slot_type;
+    int board_type;
+    long uptime;
+    char hw_version[32];
+    char sw_version[32];
+    long reg_time;
+*/
+
+int dev_getenv_int(const char *var)
+{
+    char *env_ptr = NULL;
+    env_ptr = getenv(var);
+    if (env_ptr) {
+        return atoi(env_ptr);
+    } else {
+        fprintf(stderr, "%s\n", "can not get env");
+    }
+    return 0;
+}
+
+int 
+dev_get_self_info(board_info_t *bif)
+{
+    bif->slot_id = dev_getenv_int("slotid");
+    printf("slot_id = %d\n", bif->slot_id);
+    bif->session_id = 0;
+    bif->board_type = 0x001;
+    bif->slot_type = DEV_STATE_BACKUP;
+    bif->uptime = dev_sys_uptime();
+    bif->reg_time = 0;
+    snprintf(bif->hw_version, sizeof(bif->hw_version), "%s", "v111");
+    snprintf(bif->hw_version, sizeof(bif->sw_version), "%s", "v_111");
+}
 
 int 
 devd_tool(int argc, char *argv[])
@@ -32,7 +69,6 @@ devd_tool(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {   
-    int slotid = 1, slottype = 1;
     int res = 0;
     char *env_ptr = NULL;
     dev_event_t *ev_srv = NULL;
@@ -47,35 +83,26 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Fail to create deafult loop\n");
         exit(-1);
     }
-
-    dev_event_loop_add(dev_event_deafult_loop(), dev_defualt_signalfd(NULL));
-
-    env_ptr = getenv("slotid");
-    if (env_ptr) {
-        slotid = atoi(env_ptr);
-    }
-    env_ptr = getenv("slottype");
-    if (env_ptr) {
-        slottype = atoi(env_ptr);
-    }
-
+ 
     rt = malloc(sizeof(struct dev_routine));
     if (rt == NULL) {
         exit(-1);
     }
-    
     rt->timer = dev_event_timer_creat(50, rt);
-    rt->slot_id = slotid;
-    rt->slot_type = slottype;
-    rt->start_time = get_timespec_sec();
+    dev_get_self_info(&rt->board_info);
 
-
-    if (slotid == 3) {
+    if (rt->board_info.slot_type == DEV_STATE_IO) {
         ev_srv = dev_io_creat(rt);
     } else {
         ev_srv = dev_master_creat(rt);
     }
 
+    if (ev_srv == NULL) {
+        fprintf(stderr, "%s\n", "ev_srv is NULL");
+        exit(-1);
+    }
+
+    dev_event_loop_add(dev_event_deafult_loop(), dev_defualt_signalfd(NULL));
     dev_event_loop_add(dev_event_deafult_loop(), rt->timer);
     dev_event_loop_add(dev_event_deafult_loop(), ev_srv);
     dev_event_loop_run(dev_event_deafult_loop());

@@ -7,7 +7,7 @@
 #include "dev_main.h"
 #include <arpa/inet.h>
 
-static char protocol_buf[4096] = {0};
+static char protocol_buf[2048] = {0};
 static int portNum = 88;
 #define MSG_HEAD_LEN sizeof(msg_head_t)
 
@@ -24,22 +24,31 @@ dev_msg_head(msg_head_t *msg, uint8_t type, uint16_t len)
     msg->type = type;
     if (len) msg->len = htons(len);
 }
-
+/*
+    uint8_t   slot;
+    uint8_t   slot_type;
+    uint16_t  board_type;
+    uint32_t  seq;
+    uint32_t  uptime;
+    uint32_t  flag;
+*/
 int 
-dev_probe(int flag, int slot, int seq, int time)
+dev_probe(int slot, int slot_type, int seq, int flag)
 {
     msg_head_t *msg = (msg_head_t *)protocol_buf;
     msg_probe_t *probe = (msg_probe_t *)msg->data;
+    long uptime = dev_sys_uptime();
 
-    probe->flag = (uint8_t)flag;
     probe->slot = (uint8_t)slot;
+    probe->slot_type = (uint8_t)slot_type;
     probe->seq = htonl((uint32_t)seq);
-    probe->time = htonl((uint32_t)time);
+    probe->uptime = htonll((uint64_t)uptime);
+    probe->flag = htonl((uint32_t)flag);
     dev_msg_head(msg, DEV_RPROBE, sizeof(msg_probe_t));
-
     return (sizeof(msg_probe_t) + MSG_HEAD_LEN);
 }
 
+/*
 int 
 dev_register(int slot, int seq, int time, int boardstate, int boardtype, char *hw_ver, char *sw_ver)
 {
@@ -83,25 +92,19 @@ dev_heart_beat(int seq, int session_id)
 
     return (sizeof(msg_register_ack_t) + MSG_HEAD_LEN);
 }
+*/
 
-
-int dev_master_exist_probe(void)
+/*int dev_master_exist_probe(void)
 {
     msg_head_t *msg = (msg_head_t *)protocol_buf;
     dev_msg_head(msg, DEV_MASTER_EXISTS, 0);
     return (MSG_HEAD_LEN);
-}
-
-
+}*/
 int
 dev_sent_msg(int fd, int slotid, int msg_len)
 {
     int i = 0;
-
-
     dev_udp_send_to_id(fd, slotid, portNum, protocol_buf, msg_len);
-
-    printf("fd=%d\n", fd);
     return 0;
 }
 

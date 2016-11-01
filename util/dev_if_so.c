@@ -15,7 +15,7 @@
 #define UWARE_DEFAULT_IP_ "192.168.168.0"
 #endif
 static char base_ip[32] = {"192.168.168.0"};
-static unsigned short base_port = 8000;
+static unsigned short base_port = 9000;
 
 int 
 dev_get_port(unsigned short port)
@@ -59,6 +59,11 @@ dev_get_id_by_addr(struct sockaddr_in *addr, int *slot_id)
     char ip[32] = {0};
     int slot;
 
+    if (addr == NULL) {
+        printf("dev_get_id_by_addr, addr is NULL \n");
+        *slot_id = -1;
+        return -1;
+    }
     inet_ntop(AF_INET, &addr->sin_addr, ip, sizeof ip);
 
     if (strncmp(ip, UWARE_DEFAULT_IP_, 12) == 0) {

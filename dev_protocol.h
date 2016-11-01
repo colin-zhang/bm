@@ -3,15 +3,42 @@
 
 #include <stdint.h>
 
+static inline uint64_t htonll(uint64_t val) { 
+     return  (((uint64_t) htonl(val))  <<   32 )  +  htonl(val  >>   32 ); 
+} 
+
+static inline uint64_t ntohll(uint64_t val) { 
+     return  (((uint64_t) ntohl(val))  <<   32 )  +  ntohl(val  >>   32 ); 
+} 
+
+//globle packet head
+typedef struct _msg_head
+{
+   uint8_t   version;
+   uint8_t   type;
+   uint16_t  len;
+   int8_t    data[0];
+}msg_head_t;
+
+enum protocol_type
+{
+    DEV_RPROBE = 1,
+    DEV_RPROBE_ACK,
+    DEV_HEARTBEAT,
+    DEV_REGISTER,
+    DEV_REBOOT,
+    DEV_CMD_MAX
+};
 
 //主控板探测报文
 typedef struct _msg_probe
 {
-    uint8_t   flag;
     uint8_t   slot;
-    uint16_t  reserved;
+    uint8_t   slot_type;
+    uint16_t  board_type;
     uint32_t  seq;
-    uint32_t  time;
+    uint64_t  uptime;
+    uint32_t  flag;
 }msg_probe_t;
 
 //业务板注册报文
@@ -21,6 +48,7 @@ typedef struct _msg_register
     uint32_t  time;
     uint32_t  boardState;
     uint8_t   slot;
+    uint64_t  uptime;
     uint8_t   reserved1;
     uint16_t  reserved2;
     uint32_t  boardType;
@@ -36,62 +64,6 @@ typedef struct _msg_register_ack
 }msg_register_ack_t;
 
 
-typedef struct tag_STMODULESERVER
-{
-    uint32_t  uiModuleId;
-}STMODULESERVER;
-
-
-typedef struct tag_STATESRVSEQ
-{
-    int iSubNum;
-    int iSlotMin;
-    int iSlotMax;
-}STATESRVSEQ;
-
-enum BoardStateNotify
-{
-    DEV_BOARDSTATE,
-    DEV_LINKSTATE,
-    DEV_NOTYFY_MAX
-};
-
-typedef struct tag_STATESRV
-{
-    int iType;
-    int iSlotId;
-    int iLinkState;
-}STATESRV;
-
-//globle packet head
-typedef struct _msg_head
-{
-   uint8_t   version;
-   uint8_t   type;
-   uint16_t  len;
-   int8_t    data[0];
-}msg_head_t;
-
-enum protocol_type
-{
-    DEV_GET_LINKSTATE = 0,          //lib
-    DEV_GET_BOARDSTATE,
-    DEV_REGISTER_SRV,
-    DEV_SHOW_VERSION,          //cli
-    DEV_SHOW_SLOT_INFO,
-    DEV_SHOW_EXECPTION,    
-    DEV_REBOOT,
-    DEV_RPROBE,                //board management
-    DEV_HEARTBEAT,
-    DEV_REGISTER,
-    DEV_MASTER_CONFLICT,
-    DEV_SLAVE_VOTE,
-    DEV_MASTER_EXISTS,
-    DEV_MODULE_REGISTERSRV,
-    DEV_BOARD_STATE_NOTIFY,
-    DEV_BOARD_IF_INFO,
-    DEV_CMD_MAX
-};
 
 
 

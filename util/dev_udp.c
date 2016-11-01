@@ -15,6 +15,7 @@
 
 #include "dev_if_so.h"
 #include "dev_common.h"
+#include "dev_log.h"
 #include "../def/dev_def.h"
 
 static int if_broad = 0;
@@ -134,9 +135,9 @@ dev_udp_rev_from_id(int sockfd, char *rsv, int rsv_len, int *slot)
 
     n = recvfrom(sockfd, rsv, rsv_len, 0, (struct sockaddr *)&addr, &addrlen);
     if (n < 0) {
+        printf("recvfrom error\n");
         return -1;
     }
-
     ret = dev_get_id_by_addr(&addr, slot);
     if (ret < 0) {
         return -1;
