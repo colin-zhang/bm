@@ -11,6 +11,11 @@
 #include "dev_board.h"
 #include "dev_master.h"
 
+/*struct io_group
+{
+
+};
+*/
 struct master_info
 {
     dev_routine_t *rt;
@@ -19,10 +24,6 @@ struct master_info
     int max_board_num;
     int reg_board_num;
     board_info_t **boards;
-    
-    int max_master_board_num;
-    int master_board_num;
-    board_info_t **m_boards;
 };
 
 int 
@@ -140,7 +141,7 @@ int
 probe_master_hander(void *ptr, void *ptr_self)
 {
     master_info_t *mif = (master_info_t *)ptr_self;
-    board_info_t *self_bif = (board_info_t *)&(mif->rt->board_info);
+    board_info_t *self_bif = (board_info_t *)(mif->rt->self_info);
     int i = 0;
 
     for (i = 1; i < 14; i++) {
@@ -178,7 +179,7 @@ dev_master_info_init(void *rt)
 
     mif_ptr = calloc(1, sizeof(master_info_t));
 
-    mif_ptr->boards = calloc(MAX_BOARD_NUM, sizeof(struct board_info));
+    mif_ptr->boards = calloc(MAX_BOARD_NUM, sizeof(board_info_t));
     mif_ptr->max_board_num = MAX_BOARD_NUM;
     mif_ptr->reg_board_num = 0;
     mif_ptr->rt = (dev_routine_t *)rt;
@@ -199,7 +200,7 @@ dev_master_creat(void *data)
     dev_routine_t *rt = (dev_routine_t *)data;
     master_info_t *mif;
     
-    rt->ifd = dev_udp_port_creat(rt->board_info.slot_id, dev_protocol_port());
+    rt->ifd = dev_udp_port_creat(rt->self_info->slot_id, dev_protocol_port());
     ev_ptr = dev_event_creat(rt->ifd, DEV_EVENT_IO, EPOLLIN , 0);
     if (ev_ptr == NULL) {
         dbg_Print("ev_ptr, dev_event_creat\n");

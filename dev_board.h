@@ -34,8 +34,16 @@ typedef struct board_info
     long uptime;  /* uptime of this board */
     char hw_version[32];
     char sw_version[32];
-    long reg_time;
 }board_info_t;
+
+typedef struct dev_master_group
+{
+    int max_size;
+    int count;
+    int chief_index;
+    int update_flag;     // if 1 need fresh
+    board_info_t **member;
+}dev_master_group_t;
 
 typedef struct dev_routine 
 {
@@ -43,8 +51,8 @@ typedef struct dev_routine
     int ifd;
     int ofd;
     int state;
-    board_info_t board_info;
-    board_info_t master_info[2];
+    board_info_t *self_info;
+    dev_master_group_t *master_group;
     void *td;
 }dev_routine_t;
 

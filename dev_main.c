@@ -24,7 +24,7 @@ devd_tool(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {   
-    int res = 0, state = 0;
+    int res = 0, slottype = 0;
     char *env_ptr = NULL;
     dev_event_t *ev_srv = NULL;
     dev_routine_t *rt = NULL;
@@ -39,13 +39,13 @@ int main(int argc, char *argv[])
         exit(-1);
     }
  
-    rt = dev_board_rt_init(&state);
+    rt = dev_board_rt_init(&slottype);
     if (rt == NULL) {
         fprintf(stderr, "%s\n", "dev_board_rt_init is fail");
         exit(-1);
     }
 
-    switch(state) {
+    switch(slottype) {
         case DEV_STATE_IO:
             ev_srv = dev_io_creat(rt);
             break;
