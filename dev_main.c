@@ -24,7 +24,7 @@ devd_tool(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {   
-    int res = 0;
+    int res = 0, state = 0;
     char *env_ptr = NULL;
     dev_event_t *ev_srv = NULL;
     dev_routine_t *rt = NULL;
@@ -39,17 +39,19 @@ int main(int argc, char *argv[])
         exit(-1);
     }
  
-    rt = malloc(sizeof(dev_routine_t));
+    rt = dev_board_rt_init(&state);
     if (rt == NULL) {
+        fprintf(stderr, "%s\n", "dev_board_rt_init is fail");
         exit(-1);
     }
-    rt->timer = dev_event_timer_creat(50, rt);
-    dev_get_self_info(&rt->board_info);
 
-    if (rt->board_info.slot_type == DEV_STATE_IO) {
-        ev_srv = dev_io_creat(rt);
-    } else {
-        ev_srv = dev_master_creat(rt);
+    switch(state) {
+        case DEV_STATE_IO:
+            ev_srv = dev_io_creat(rt);
+            break;
+        case DEV_STATE_BACKUP:
+            ev_srv = dev_master_creat(rt);
+            break;
     }
 
     if (ev_srv == NULL) {
@@ -61,6 +63,5 @@ int main(int argc, char *argv[])
     dev_event_loop_add(dev_event_deafult_loop(), rt->timer);
     dev_event_loop_add(dev_event_deafult_loop(), ev_srv);
     dev_event_loop_run(dev_event_deafult_loop());
-    
     return 0;
 }

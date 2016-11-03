@@ -15,12 +15,13 @@ typedef int slotid_array_t[16];
 
 enum board_state
 {
-    DEV_STATE_INIT,
+    DEV_SATE_INIT,
     DEV_STATE_MASTER,
     DEV_STATE_BACKUP,
     DEV_STATE_IO,
-    DEV_STATE_REG,
-    DEV_STATE_EXP,
+    DEV_STATE_IO_REG,
+    DEV_STATE_IO_EXP,
+    DEV_STATE_MASTER_EXP,
     DEV_STATE_TOBE_MASTER,
 };
 
@@ -48,8 +49,8 @@ typedef struct dev_routine
 }dev_routine_t;
 
 
-
-int dev_get_self_info(board_info_t *bif);
+dev_routine_t *dev_board_rt_init(int *type);
+int dev_self_board_info(board_info_t *bif);
 
 
 

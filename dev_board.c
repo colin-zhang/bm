@@ -10,8 +10,36 @@
 
 #include "dev_board.h"
 
+dev_routine_t *
+dev_board_rt_init(int *type)
+{
+    dev_routine_t *rt;
+    rt = calloc(1, sizeof(dev_routine_t));
+    if (rt == NULL) {
+        exit(-1);
+    }
+    rt->timer = dev_event_timer_creat(50, rt);
+    dev_self_board_info(&rt->board_info);
 
-int dev_getenv_int(const char *var)
+    switch (rt->board_info.slot_type) {
+        case DEV_STATE_MASTER:
+        case DEV_STATE_BACKUP:
+        case DEV_STATE_MASTER_EXP:
+        case DEV_STATE_TOBE_MASTER:
+            rt->board_info.slot_type = DEV_STATE_BACKUP;
+            break;
+        case DEV_STATE_IO:
+        case DEV_STATE_IO_REG:
+        case DEV_STATE_IO_EXP:
+            rt->board_info.slot_type = DEV_STATE_IO;
+            break;
+    }
+    *type = rt->board_info.slot_type;
+    return rt;
+}
+
+int 
+dev_getenv_int(const char *var)
 {
     char *env_ptr = NULL;
     env_ptr = getenv(var);
@@ -24,7 +52,7 @@ int dev_getenv_int(const char *var)
 }
 
 int 
-dev_get_self_info(board_info_t *bif)
+dev_self_board_info(board_info_t *bif)
 {
     bif->slot_id = dev_getenv_int("slotid");
     printf("slot_id = %d\n", bif->slot_id);
