@@ -5,14 +5,20 @@
 #include "util/dev_udp.h"
 #include "util/dev_if_so.h"
 
+#include "dev_board.h"
 #include "dev_io.h"
 
-#include "dev_main.h"
+
+struct io_info
+{
+
+};
+
 
 dev_event_t *
 dev_io_creat(void *data)
 {
-    dev_event_t *ev_ptr;
+    dev_event_t *ev_ptr = NULL;
     
 
     return ev_ptr;

@@ -11,6 +11,7 @@
 #include "util/dev_utils.h"
 
 #define MAX_BOARD_NUM 14
+typedef int slotid_array_t[16];
 
 enum board_state
 {
@@ -23,8 +24,7 @@ enum board_state
     DEV_STATE_TOBE_MASTER,
 };
 
-
-struct board_info
+typedef struct board_info
 {
     int session_id;
     int slot_id;
@@ -34,40 +34,23 @@ struct board_info
     char hw_version[32];
     char sw_version[32];
     long reg_time;
-};
-typedef struct board_info board_info_t;
+}board_info_t;
 
-struct dev_routine 
+typedef struct dev_routine 
 {
     dev_event_t *timer;
     int ifd;
     int ofd;
     int state;
     board_info_t board_info;
+    board_info_t master_info[2];
     void *td;
-};
-typedef struct dev_routine dev_routine_t;
-
-struct master_info
-{
-    dev_routine_t *rt;
-    dev_timer_ev_t *probe_timer;
-    int max_board_num;
-    int reg_board_num;
-    struct board_info **boards;
-    int max_master_board_num;
-    int master_board_num;
-    struct board_info **m_boards;
-};
-typedef struct master_info master_info_t;
+}dev_routine_t;
 
 
-struct io_info
-{
 
-};
+int dev_get_self_info(board_info_t *bif);
 
 
-typedef int slotid_array_t[16];
 
 #endif

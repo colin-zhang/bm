@@ -8,7 +8,22 @@
 #include "util/dev_utils.h"
 #include "util/dev_log.h"
 #include "dev_protocol.h"
-#include "dev_main.h"
+#include "dev_board.h"
+#include "dev_master.h"
+
+struct master_info
+{
+    dev_routine_t *rt;
+    dev_timer_ev_t *probe_timer;
+
+    int max_board_num;
+    int reg_board_num;
+    board_info_t **boards;
+    
+    int max_master_board_num;
+    int master_board_num;
+    board_info_t **m_boards;
+};
 
 int 
 reg_board_info_cmp(const void *a, const void *b)
@@ -130,7 +145,7 @@ probe_master_hander(void *ptr, void *ptr_self)
 
     for (i = 1; i < 14; i++) {
          if (i != self_bif->slot_id) {
-            dev_sent_msg(mif->rt->ofd, i, dev_probe(self_bif->slot_id, self_bif->slot_type, 1, 0));
+            dev_sent_msg(mif->rt->ofd, i, dev_master_probe(self_bif->slot_id, self_bif->slot_type, 1, 0));
          }
     }
     fprintf(stdout, "probe_master_hander\n");

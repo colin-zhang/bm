@@ -4,8 +4,8 @@
 #include "util/dev_utils.h"
 
 #include "dev_protocol.h"
-#include "dev_main.h"
-#include <arpa/inet.h>
+#include "dev_board.h"
+
 
 static char protocol_buf[2048] = {0};
 static int portNum = 88;
@@ -33,7 +33,7 @@ dev_msg_head(msg_head_t *msg, uint8_t type, uint16_t len)
     uint32_t  flag;
 */
 int 
-dev_probe(int slot, int slot_type, int seq, int flag)
+dev_master_probe(int slot, int slot_type, int seq, int flag)
 {
     msg_head_t *msg = (msg_head_t *)protocol_buf;
     msg_probe_t *probe = (msg_probe_t *)msg->data;

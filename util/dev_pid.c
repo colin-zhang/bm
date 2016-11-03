@@ -10,7 +10,7 @@
 #include <sys/file.h>
 #include <fcntl.h>
 
-int
+static int
 dev_check_pid(const char *daemon_name) 
 {
     int pid = 0;
@@ -33,7 +33,7 @@ dev_check_pid(const char *daemon_name)
     return pid;
 }
 
-int
+static int
 dev_pid_output(const char *daemon_name) 
 {
     FILE *f;

@@ -1,5 +1,5 @@
 #include "../def/dev_def.h"
-
+#include "dev_common.h"
 //#ifdef DEV_IPC_FIFO
 //O_RDWR|O_NONBLOCK
 
