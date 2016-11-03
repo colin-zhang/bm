@@ -101,7 +101,6 @@ dev_master_group_select(dev_master_group_t *dmg, int *them, int num)
     return base_index;
 }
 
-
 int
 dev_master_group_select_chief(dev_master_group_t *dmg)
 {
@@ -128,14 +127,17 @@ dev_master_group_add(dev_master_group_t *dmg, board_info_t * bif)
 
     index = dev_master_group_search_by_slot(dmg, bif->slot_id);
     if (index >= 0) {
+        memcpy(dmg->member[index], bif, sizeof(board_info_t));
         return index;
     }
-
+    
     if (dmg->count == dmg->max_size) {
         return -1;
     }
+    board_info_t *ptr = dev_board_info_new();
+    memcpy(ptr, bif, sizeof(board_info_t));
 
-    dmg->member[dmg->count] = bif;
+    dmg->member[dmg->count] = ptr;
     dmg->count++;
     if (dmg->count) {
         dmg->update_flag = 1;
