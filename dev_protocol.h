@@ -71,4 +71,5 @@ int dev_protocol_port(void);
 int dev_master_probe(int slot, int slot_type, int seq, int flag);
 int dev_sent_msg(int fd, int slotid, int msg_len);
 
+
 #endif

@@ -9,12 +9,21 @@
 
 static char protocol_buf[2048] = {0};
 static int portNum = 88;
+
+board_info_t *gp_bif = NULL;
+
 #define MSG_HEAD_LEN sizeof(msg_head_t)
 
 int 
 dev_protocol_port(void) 
 {
     return portNum;
+}
+
+void 
+dev_protocol_init_boardinfo(board_info_t *bif)
+{
+    gp_bif = bif;
 }
 
 static inline void

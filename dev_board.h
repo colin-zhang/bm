@@ -58,7 +58,6 @@ typedef struct dev_routine
 
 
 dev_routine_t *dev_board_rt_init(int *type);
-int dev_self_board_info(board_info_t *bif);
 
 
 

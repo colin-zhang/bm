@@ -10,8 +10,10 @@
 
 #include "dev_board.h"
 
-#define MAX_MASTER_NUM (2)
+#define MAX_MASTER_NUM (4)
 
+extern void dev_protocol_init_boardinfo(board_info_t *bif);
+static int dev_self_board_info_init(board_info_t *bif);
 
 board_info_t *
 dev_board_info_new()
@@ -25,7 +27,7 @@ dev_master_group_creat(int num)
 {
     dev_master_group_t *dmg = NULL;
     dmg = calloc(1, sizeof(dev_master_group_t));
-    if (dmg == NULL) return dmg;
+    if (dmg == NULL) return NULL;
     dmg->max_size = num;
     dmg->chief_index = -1;
     dmg->update_flag = 0;
@@ -87,6 +89,9 @@ dev_master_group_select(dev_master_group_t *dmg, int *them, int num)
     int i, index = 0, base_index = 0;
 
     base_index = them[0];
+    if (num == 1) {
+        return base_index;
+    }
 
     for (i = 1; i < dmg->count && i < num; i++) {
         index = them[i];
@@ -110,9 +115,12 @@ dev_master_group_select_chief(dev_master_group_t *dmg)
 
     num = dev_master_group_search_by_boardtype(dmg, DEV_STATE_TOBE_MASTER, select_indexs);
     if (num == 0) {
-        num = dmg->count;
-        for (i = 0; i < num; i++) {
-            select_indexs[i] = i;
+        num = dev_master_group_search_by_boardtype(dmg, DEV_STATE_MASTER, select_indexs); 
+        if (num == 0) {
+            num = dmg->count;
+            for (i = 0; i < num; i++) {
+                select_indexs[i] = i;
+            }
         }
     }
     index = dev_master_group_select(dmg, select_indexs, num);
@@ -134,10 +142,15 @@ dev_master_group_add(dev_master_group_t *dmg, board_info_t * bif)
     if (dmg->count == dmg->max_size) {
         return -1;
     }
-    board_info_t *ptr = dev_board_info_new();
-    memcpy(ptr, bif, sizeof(board_info_t));
 
-    dmg->member[dmg->count] = ptr;
+    if (dmg->count == 0) {
+        board_info_t *ptr = dev_board_info_new();
+        memcpy(ptr, bif, sizeof(board_info_t));
+        dmg->member[dmg->count] = ptr;
+    } else {
+        dmg->member[dmg->count] = bif;
+    }
+ 
     dmg->count++;
     if (dmg->count) {
         dmg->update_flag = 1;
@@ -158,15 +171,16 @@ dev_board_rt_init(int *type)
     rt->self_info = dev_board_info_new();
     rt->master_group = dev_master_group_creat(MAX_MASTER_NUM);    
 
-    dev_self_board_info(rt->self_info);
-    dev_master_group_add(rt->master_group, rt->self_info);
-
+    dev_self_board_info_init(rt->self_info);
+    dev_protocol_init_boardinfo(rt->self_info);
+    
     switch (rt->self_info->slot_type) {
         case DEV_STATE_MASTER:
         case DEV_STATE_BACKUP:
         case DEV_STATE_MASTER_EXP:
         case DEV_STATE_TOBE_MASTER:
             rt->self_info->slot_type = DEV_STATE_BACKUP;
+            dev_master_group_add(rt->master_group, rt->self_info);
             break;
         case DEV_STATE_IO:
         case DEV_STATE_IO_REG:
@@ -191,8 +205,8 @@ dev_getenv_int(const char *var)
     return 0;
 }
 
-int 
-dev_self_board_info(board_info_t *bif)
+static int 
+dev_self_board_info_init(board_info_t *bif)
 {
     bif->slot_id = dev_getenv_int("slotid");
     printf("slot_id = %d\n", bif->slot_id);
