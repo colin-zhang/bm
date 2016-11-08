@@ -22,6 +22,14 @@ dev_board_info_new()
     return bif;
 }
 
+void 
+dev_board_info_update_state(board_info_t *to, board_info_t *from) 
+{
+    to->slot_type = from->slot_type;
+    to->timeout_chk = from->timeout_chk;
+    to->uptime = from->uptime;
+}
+
 dev_master_group_t *
 dev_master_group_creat(int num)
 {
@@ -40,7 +48,7 @@ dev_master_group_creat(int num)
     return dmg;
 }
 
-int 
+static int 
 dev_master_group_search_by_slot(dev_master_group_t *dmg, int slot_id)
 {
     int i;
@@ -53,46 +61,39 @@ dev_master_group_search_by_slot(dev_master_group_t *dmg, int slot_id)
 }
 
 /* DEV_STATE_TOBE_MASTER */
-int 
-dev_master_group_search_by_boardtype(dev_master_group_t *dmg, int type, int *them)
+static int 
+dev_master_group_search_by_slottype(dev_master_group_t *dmg, int type, int *them)
 {
     int i = 0, j = 0;
     for (i = 0, j = 0; i < dmg->count; i++) {
-        if (dmg->member[i]->board_type == type) {
+        if (dmg->member[i]->slot_type == type) {
             them[j++] = i;
         }
     }
     return j;
 }
 
-int
+static int
 dev_master_group_set_chief(dev_master_group_t *dmg, int index)
 {
     int i = 0;
-
-    dmg->chief_index = index;
-    dmg->update_flag = 0;
-
     for (i = 0; i < dmg->count; i++) {
-        if (i == index) {
-            dmg->member[i]->board_type = DEV_STATE_MASTER;
-        } else {
-            dmg->member[i]->board_type = DEV_STATE_BACKUP;
-        }
+        dmg->member[i]->slot_type = DEV_STATE_BACKUP;
+    }
+    if (index >=0 && index < dmg->count) {
+        dmg->member[index]->slot_type = DEV_STATE_MASTER;
+        dmg->chief_index = index;
+        dmg->update_flag = 0;
     }
     return 0;
 }
 
-int
+static int
 dev_master_group_select(dev_master_group_t *dmg, int *them, int num)
 {
     int i, index = 0, base_index = 0;
 
     base_index = them[0];
-    if (num == 1) {
-        return base_index;
-    }
-
     for (i = 1; i < dmg->count && i < num; i++) {
         index = them[i];
         if (dmg->member[index]->uptime > dmg->member[base_index]->uptime) {
@@ -107,25 +108,44 @@ dev_master_group_select(dev_master_group_t *dmg, int *them, int num)
 }
 
 int
+dev_master_group_chief_slotid(dev_master_group_t *dmg)
+{
+    return dmg->member[dmg->chief_index]->slot_id;
+}
+
+int
 dev_master_group_select_chief(dev_master_group_t *dmg)
 {
     int index = 0, i = 0;
     int num = 0;
     int select_indexs[MAX_MASTER_NUM] = {0};
 
-    num = dev_master_group_search_by_boardtype(dmg, DEV_STATE_TOBE_MASTER, select_indexs);
+    num = dev_master_group_search_by_slottype(dmg, DEV_STATE_TOBE_MASTER, select_indexs);
     if (num == 0) {
-        num = dev_master_group_search_by_boardtype(dmg, DEV_STATE_MASTER, select_indexs); 
+        num = dev_master_group_search_by_slottype(dmg, DEV_STATE_MASTER, select_indexs); 
         if (num == 0) {
-            num = dmg->count;
-            for (i = 0; i < num; i++) {
-                select_indexs[i] = i;
-            }
+            num = dev_master_group_search_by_slottype(dmg, DEV_STATE_BACKUP, select_indexs);
         }
     }
     index = dev_master_group_select(dmg, select_indexs, num);
-    dev_master_group_set_chief(dmg,  index);
+    dev_master_group_set_chief(dmg, index);
+    printf("chief slot_id = [%d]\n", dev_master_group_chief_slotid(dmg));
     return index;
+}
+
+int 
+dev_master_group_probe_timeout_check(dev_master_group_t *dmg)
+{
+    int i = 0;
+    for (i = 1; i < dmg->count; i++) {
+        if (dmg->member[i]->timeout_chk) {
+            dmg->member[i]->slot_type = DEV_STATE_MASTER_OFFLINE;
+            dev_master_group_select_chief(dmg);
+        } else {
+            dmg->member[i]->timeout_chk = 1;
+        }
+    }
+    return 0;
 }
 
 int 
@@ -135,7 +155,7 @@ dev_master_group_add(dev_master_group_t *dmg, board_info_t * bif)
 
     index = dev_master_group_search_by_slot(dmg, bif->slot_id);
     if (index >= 0) {
-        memcpy(dmg->member[index], bif, sizeof(board_info_t));
+        dev_board_info_update_state(dmg->member[index], bif);
         return index;
     }
     
@@ -143,12 +163,12 @@ dev_master_group_add(dev_master_group_t *dmg, board_info_t * bif)
         return -1;
     }
 
-    if (dmg->count == 0) {
+    if (dmg->count == 0 && bif->slot_type == DEV_STATE_BACKUP) {
+        dmg->member[0] = bif;
+    } else {
         board_info_t *ptr = dev_board_info_new();
         memcpy(ptr, bif, sizeof(board_info_t));
         dmg->member[dmg->count] = ptr;
-    } else {
-        dmg->member[dmg->count] = bif;
     }
  
     dmg->count++;
@@ -213,7 +233,7 @@ dev_self_board_info_init(board_info_t *bif)
     bif->session_id = 0;
     bif->board_type = 0x001;
     bif->slot_type = DEV_STATE_BACKUP;
-    bif->uptime = dev_sys_uptime();
+    //bif->uptime = dev_sys_uptime();
     snprintf(bif->hw_version, sizeof(bif->hw_version), "%s", "v111");
     snprintf(bif->hw_version, sizeof(bif->sw_version), "%s", "v_111");
     return 0;

@@ -10,7 +10,7 @@
 static char protocol_buf[2048] = {0};
 static int portNum = 88;
 
-board_info_t *gp_bif = NULL;
+static board_info_t *gp_bif = NULL;
 
 #define MSG_HEAD_LEN sizeof(msg_head_t)
 
@@ -31,6 +31,9 @@ dev_msg_head(msg_head_t *msg, uint8_t type, uint16_t len)
 {
     msg->version = 0x02;
     msg->type = type;
+    msg->slot_id = gp_bif->slot_id;
+    msg->slot_type = gp_bif->slot_type;
+    msg->board_type = htons(gp_bif->board_type);
     if (len) msg->len = htons(len);
 }
 /*
@@ -42,19 +45,41 @@ dev_msg_head(msg_head_t *msg, uint8_t type, uint16_t len)
     uint32_t  flag;
 */
 int 
-dev_master_probe(int slot, int slot_type, int seq, int flag)
+dev_master_probe(int seq, int flag)
 {
     msg_head_t *msg = (msg_head_t *)protocol_buf;
     msg_probe_t *probe = (msg_probe_t *)msg->data;
     long uptime = dev_sys_uptime();
 
-    probe->slot = (uint8_t)slot;
-    probe->slot_type = (uint8_t)slot_type;
     probe->seq = htonl((uint32_t)seq);
     probe->uptime = htonll((uint64_t)uptime);
     probe->flag = htonl((uint32_t)flag);
     dev_msg_head(msg, DEV_RPROBE, sizeof(msg_probe_t));
     return (sizeof(msg_probe_t) + MSG_HEAD_LEN);
+}
+
+/*
+    uint32_t  seq;
+    uint32_t  time;
+    uint64_t  uptime;
+    uint8_t   hwVersion[32];
+    uint8_t   swVersion[32];
+*/
+
+int 
+dev_master_probe_ack(int seq)
+{
+    msg_head_t *msg = (msg_head_t *)protocol_buf;
+    msg_probe_ack_t *probe_ack = (msg_probe_ack_t *)msg->data;
+    long uptime = dev_sys_uptime();
+
+    probe_ack->seq = htonl((uint32_t)seq);
+    probe_ack->uptime = htonll((uint64_t)uptime);
+    snprintf((char *)probe_ack->hwVersion, sizeof(probe_ack->hwVersion), "%s", gp_bif->hw_version);
+    snprintf((char *)probe_ack->swVersion, sizeof(probe_ack->swVersion), "%s", gp_bif->sw_version);
+
+    dev_msg_head(msg, DEV_RPROBE_ACK, sizeof(msg_probe_ack_t));
+    return (sizeof(msg_probe_ack_t) + MSG_HEAD_LEN);
 }
 
 /*

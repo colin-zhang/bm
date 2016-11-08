@@ -4,6 +4,8 @@
 #include <stdarg.h>
 #include <pthread.h>
 
+#include "dev_log.h"
+
 static pthread_mutex_t log_mut = PTHREAD_MUTEX_INITIALIZER;
 void
 log_printf(const char *format, ...)
@@ -13,7 +15,7 @@ log_printf(const char *format, ...)
     va_start(args, format);
 
     pthread_mutex_lock(&log_mut);
-    if ((f = fopen("/var/log/devd_log", "a+")) != NULL) {
+    if ((f = fopen("/var/log/dev2d_log", "a+")) != NULL) {
         vfprintf(f, format, args);
         fflush(f);
         fclose(f);

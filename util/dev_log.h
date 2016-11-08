@@ -16,5 +16,6 @@
         #define DEBUG_PRINT(fmt, args...)  fprintf(stderr, "DBG:%s(%d)-%s: "fmt"\n", __FILE__, __LINE__, __FUNCTION__, ##args);
 #endif
 
+void log_printf(const char *format, ...);
 
 #endif
