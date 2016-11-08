@@ -14,7 +14,7 @@
 
 
 int 
-reg_board_info_cmp(const void *a, const void *b)
+reg_board_info_cmp_slot_id(const void *a, const void *b)
 {
     /* ascending order */
 
@@ -41,9 +41,9 @@ reg_boards_adjust(master_info_t *mif, int index)
 }
 
 int
-reg_boards_sort(master_info_t *mif)
+reg_boards_sort_by_slotid(master_info_t *mif)
 {
-    qsort(mif->boards, mif->reg_board_num, sizeof(board_info_t *), reg_board_info_cmp);
+    qsort(mif->boards, mif->reg_board_num, sizeof(board_info_t *), reg_board_info_cmp_slot_id);
     return 0;
 }
 
@@ -89,7 +89,7 @@ reg_boards_add(master_info_t *mif, board_info_t *bif)
     }
     mif->boards[mif->reg_board_num] = bif;
     mif->reg_board_num++;
-    reg_boards_sort(mif);
+    reg_boards_sort_by_slotid(mif);
     return 0;
 }
 
