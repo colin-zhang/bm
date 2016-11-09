@@ -29,6 +29,7 @@ enum protocol_type
     DEV_RPROBE_ACK,
     DEV_HEARTBEAT,
     DEV_REGISTER,
+    DEV_REGISTER_ACK,
     DEV_REBOOT,
     DEV_CMD_MAX
 };
@@ -55,10 +56,7 @@ typedef struct _msg_probe_ack
 typedef struct _msg_register
 {
     uint32_t  seq;
-    uint32_t  boardState;
     uint64_t  uptime;
-    uint8_t   reserved1;
-    uint16_t  reserved2;
     uint8_t   hwVersion[32];
     uint8_t   swVersion[32];
 }msg_register_t;
@@ -71,12 +69,24 @@ typedef struct _msg_register_ack
 }msg_register_ack_t;
 
 
+typedef struct _msg_heartbeat
+{
+    uint32_t  seq;
+    uint64_t  uptime;
+}msg_heartbeat_t;
 
 
 
 int dev_protocol_port(void);
+
 int dev_master_probe(int seq, int flag);
 int dev_master_probe_ack(int seq);
+
+int dev_io_register(int seq);
+int dev_register_ack(int seq);
+
+int dev_heart_beat(int seq);
+
 int dev_sent_msg(int fd, int slotid, int msg_len);
 
 

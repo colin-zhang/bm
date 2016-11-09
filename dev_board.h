@@ -61,7 +61,6 @@ typedef struct dev_routine
     dev_event_t *timer;
     int ifd;
     int ofd;
-    int state;
     board_info_t *self_info;
     dev_master_group_t *master_group;
     void *td;
@@ -72,7 +71,7 @@ dev_routine_t *dev_board_rt_init(int *type);
 
 
 
-int dev_master_group_probe_timeout_check(dev_master_group_t *dmg);
+int dev_master_group_probe_timeout_check(dev_master_group_t *dmg, int from);
 
 
 int dev_master_group_add(dev_master_group_t *dmg, board_info_t * bif);

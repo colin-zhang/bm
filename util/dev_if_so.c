@@ -15,7 +15,7 @@
 #define UWARE_DEFAULT_IP_ "192.168.168.0"
 #endif
 static char base_ip[32] = {"192.168.168.0"};
-static unsigned short base_port = 9000;
+static unsigned short base_port = 0;
 
 int 
 dev_get_port(unsigned short port)

@@ -13,6 +13,7 @@
 #define MAX_MASTER_NUM (4)
 
 extern void dev_protocol_init_boardinfo(board_info_t *bif);
+extern int dev_protocol_port(void);
 static int dev_self_board_info_init(board_info_t *bif);
 
 board_info_t *
@@ -134,13 +135,13 @@ dev_master_group_select_chief(dev_master_group_t *dmg)
 }
 
 int 
-dev_master_group_probe_timeout_check(dev_master_group_t *dmg)
+dev_master_group_probe_timeout_check(dev_master_group_t *dmg, int from)
 {
     int i = 0;
-    for (i = 1; i < dmg->count; i++) {
+    for (i = from; i < dmg->count; i++) {
         if (dmg->member[i]->timeout_chk) {
             dmg->member[i]->slot_type = DEV_STATE_MASTER_OFFLINE;
-            dev_master_group_select_chief(dmg);
+            return 1;
         } else {
             dmg->member[i]->timeout_chk = 1;
         }
@@ -193,6 +194,9 @@ dev_board_rt_init(int *type)
 
     dev_self_board_info_init(rt->self_info);
     dev_protocol_init_boardinfo(rt->self_info);
+
+    rt->ifd = dev_udp_port_creat(rt->self_info->slot_id, dev_protocol_port());
+    rt->ofd = dev_udp_client_creat();
     
     switch (rt->self_info->slot_type) {
         case DEV_STATE_MASTER:

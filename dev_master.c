@@ -17,7 +17,6 @@ int
 reg_board_info_cmp_slot_id(const void *a, const void *b)
 {
     /* ascending order */
-
     board_info_t ** aa = (board_info_t **)a;
     board_info_t ** bb = (board_info_t **)b;
 
@@ -155,9 +154,10 @@ master_checker(void *ptr, void *ptr_self)
     dev_routine_t *rt = (dev_routine_t *)mif->rt;
     board_info_t *self_bif = (board_info_t *)(mif->rt->self_info);
 
-    dev_master_group_probe_timeout_check(rt->master_group);
+    if (dev_master_group_probe_timeout_check(rt->master_group, 1)) {
+        dev_master_group_select_chief(rt->master_group);
+    }
     
-    printf("%s\n", "master_checker");
     return 0;
 }
 
@@ -180,9 +180,30 @@ master_elect(void *ptr, void *ptr_self)
     return 0;
 }
 
-
-
 static char rsv_data[2048] = {0};
+
+static int 
+master_disp_regester(master_info_t *mif, char *msg, int slotid)
+{
+    dev_routine_t *rt = (dev_routine_t *)mif->rt;
+    msg_head_t *msg_head = (msg_head_t *)msg;
+    msg_probe_t *probe = (msg_probe_t *)msg_head->data;
+    static int conter = 0;
+
+    dev_sent_msg(rt->ofd, slotid, dev_register_ack(1));
+    return 0;
+}
+
+static int 
+master_disp_heartbeat(master_info_t *mif, char *msg, int slotid)
+{
+    dev_routine_t *rt = (dev_routine_t *)mif->rt;
+    msg_head_t *msg_head = (msg_head_t *)msg;
+    msg_probe_t *probe = (msg_probe_t *)msg_head->data;
+    static int conter = 0;
+    return 0;
+}
+
 
 static int 
 master_disp_probe(master_info_t *mif, char *msg, int slotid)
@@ -193,21 +214,9 @@ master_disp_probe(master_info_t *mif, char *msg, int slotid)
     static int conter = 0;
 
     dev_sent_msg(rt->ofd, slotid, dev_master_probe_ack(1));
-
     return 0;
 }
 
-/*
-    int session_id;
-    int slot_id;
-    int slot_type;
-    int board_type;
-    long uptime;  
-    long uptime_m; 
-    char hw_version[32];
-    char sw_version[32];
-    int  timeout_chk; // 1 is timeout, it is offline
-*/
 static int
 master_disp_probe_ack(master_info_t *mif, char *msg)
 {
@@ -234,7 +243,6 @@ master_disp_probe_ack(master_info_t *mif, char *msg)
     return 0;
 }
 
-
 static int 
 master_io_disp(void *ptr)
 {
@@ -255,14 +263,19 @@ master_io_disp(void *ptr)
             master_disp_probe_ack(mif, rsv_data);
             break;
         case DEV_REGISTER:
+            master_disp_regester(mif, rsv_data, rsv_slot);
+            break;
+        case DEV_HEARTBEAT:
+            master_disp_heartbeat(mif, rsv_data, rsv_slot);
+        default:
+            dev_board_common_disp(mif->rt, msg_head->type);
             break;
     }
-    dev_board_common_disp(mif->rt, msg_head->type);
     
     return 0;
 }
 
-master_info_t *
+static master_info_t *
 dev_master_info_init(void *rt)
 {
     master_info_t * mif_ptr = NULL;
@@ -297,19 +310,15 @@ dev_event_t *
 dev_master_creat(void *data)
 {
     dev_event_t *ev_ptr;
-    dev_timer_ev_t *timer1 = NULL, *timer2 = NULL, *timer3 = NULL;
     dev_routine_t *rt = (dev_routine_t *)data;
     master_info_t *mif;
-    
-    rt->ifd = dev_udp_port_creat(rt->self_info->slot_id, dev_protocol_port());
+        
     ev_ptr = dev_event_creat(rt->ifd, DEV_EVENT_IO, EPOLLIN , 0);
     if (ev_ptr == NULL) {
         dbg_Print("ev_ptr, dev_event_creat\n");
         return NULL;
     }
 
-    rt->ofd = dev_udp_client_creat();
-    rt->state = DEV_STATE_BACKUP;
     mif = dev_master_info_init(rt);
     rt->td = mif;
 
