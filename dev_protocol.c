@@ -9,6 +9,7 @@
 
 static char protocol_buf[2048] = {0};
 static int portNum = 88;
+static const int dev_protocol_version = 0x02;
 
 static board_info_t *gp_bif = NULL;
 
@@ -29,7 +30,7 @@ dev_protocol_init_boardinfo(board_info_t *bif)
 static inline void
 dev_msg_head(msg_head_t *msg, uint8_t type, uint16_t len)
 {
-    msg->version = 0x02;
+    msg->version = dev_protocol_version;
     msg->type = type;
     msg->slot_id = gp_bif->slot_id;
     msg->slot_type = gp_bif->slot_type;
