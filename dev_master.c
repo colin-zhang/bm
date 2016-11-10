@@ -187,8 +187,19 @@ master_disp_regester(master_info_t *mif, char *msg, int slotid)
 {
     dev_routine_t *rt = (dev_routine_t *)mif->rt;
     msg_head_t *msg_head = (msg_head_t *)msg;
-    msg_probe_t *probe = (msg_probe_t *)msg_head->data;
+    msg_register_t *reg = (msg_register_t *)msg_head->data;
     static int conter = 0;
+
+    board_info_t bif_tmp;
+    int ret = 0;
+
+    bif_tmp.slot_id = msg_head->slot_id;
+    bif_tmp.slot_type = msg_head->slot_type;
+    bif_tmp.board_type = ntohs(msg_head->board_type);
+    bif_tmp.uptime = ntohll(reg->uptime);
+    snprintf((char *)bif_tmp.hw_version, sizeof(bif_tmp.hw_version), "%s", reg->hwVersion);
+    snprintf((char *)bif_tmp.sw_version, sizeof(bif_tmp.sw_version), "%s", reg->swVersion);
+    bif_tmp.timeout_chk = 0;
 
     dev_sent_msg(rt->ofd, slotid, dev_register_ack(1));
     return 0;
@@ -199,7 +210,7 @@ master_disp_heartbeat(master_info_t *mif, char *msg, int slotid)
 {
     dev_routine_t *rt = (dev_routine_t *)mif->rt;
     msg_head_t *msg_head = (msg_head_t *)msg;
-    msg_probe_t *probe = (msg_probe_t *)msg_head->data;
+    msg_heartbeat_t *heartbeat = (msg_heartbeat_t *)msg_head->data;
     static int conter = 0;
     return 0;
 }
