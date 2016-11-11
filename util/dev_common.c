@@ -1,5 +1,7 @@
 #include <sys/stat.h>
 #include <sys/statfs.h>
+#include <unistd.h>
+#include <sys/types.h>
 #include <sys/mman.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -156,13 +158,17 @@ dev_file_mmap(const char *path , int size)
 {
     int fd;  
     void *ptr;
+    int ret = 0;
 
     if((fd = open(path, O_RDWR)) < 0 )   
     {   
         return NULL;  
     }   
 
-    ftruncate(fd, size);
+    if (ftruncate(fd, size) < 0) {
+        return NULL;
+    }
+
     ptr = mmap(0, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);  
     close(fd);
    

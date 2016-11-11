@@ -236,7 +236,7 @@ dev_self_board_info_init(board_info_t *bif)
     printf("slot_id = %d\n", bif->slot_id);
     bif->session_id = 0;
     bif->board_type = 0x001;
-    bif->slot_type = DEV_STATE_BACKUP;
+    bif->slot_type = dev_getenv_int("slottype");;
     //bif->uptime = dev_sys_uptime();
     snprintf(bif->hw_version, sizeof(bif->hw_version), "%s", "v111");
     snprintf(bif->hw_version, sizeof(bif->sw_version), "%s", "v_111");

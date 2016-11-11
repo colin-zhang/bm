@@ -11,6 +11,10 @@
 #include "dev_utils.h"
 #include <time.h>
 
+#define DEV_ONE_SECOND  1000000000
+#define DEV_ONE_MSECOND 1000000
+#define DEV_ONE_VSECOND 1000
+
 long 
 dev_sys_uptime(void)
 {
@@ -79,6 +83,8 @@ dev_timespec_cmp(struct timespec *ts1, struct timespec *ts2)
         }
     }
 }
+
+
 
 void
 dev_timespec_add(struct timespec *ts1, struct timespec *ts2) 
