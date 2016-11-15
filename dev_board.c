@@ -17,7 +17,7 @@ extern int dev_protocol_port(void);
 static int dev_self_board_info_init(board_info_t *bif);
 
 board_info_t *
-dev_board_info_new()
+dev_board_info_new(void)
 {
     board_info_t *bif = calloc(1, sizeof(board_info_t));
     return bif;

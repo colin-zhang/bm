@@ -67,6 +67,10 @@ typedef struct dev_routine
 }dev_routine_t;
 
 
+board_info_t *dev_board_info_new(void);
+
+void dev_board_info_update_state(board_info_t *to, board_info_t *from);
+
 dev_routine_t *dev_board_rt_init(int *type);
 
 

@@ -92,6 +92,19 @@ reg_boards_add(master_info_t *mif, board_info_t *bif)
     return 0;
 }
 
+int
+reg_boards_update(master_info_t *mif, board_info_t *bif)
+{
+    int index = reg_boards_bsearch(mif, bif->slot_id);\
+    if (index < 0) {
+        return -1;
+    }
+    mif->boards[mif->reg_board_num] = bif;
+    mif->reg_board_num++;
+    reg_boards_sort_by_slotid(mif);
+    return 0;
+}
+
 int 
 reg_boards_del(master_info_t *mif, int slot_id)
 {
@@ -111,6 +124,21 @@ reg_boards_del(master_info_t *mif, int slot_id)
         return 0;
     }
     return -1;
+}
+
+int
+reg_boards_check(master_info_t *mif)
+{
+    int i = 0;
+    for (i = 0; i < mif->reg_board_num; i++) {
+        if (mif->boards[i]->timeout_chk) {
+            mif->boards[i]->slot_type = DEV_SATE_IO_OFFLINE;
+            return 1;
+        } else {
+            mif->boards[i]->timeout_chk = 1;
+        }
+    }
+    return 0;
 }
 
 void 
@@ -157,6 +185,10 @@ master_checker(void *ptr, void *ptr_self)
     if (dev_master_group_probe_timeout_check(rt->master_group, 1)) {
         dev_master_group_select_chief(rt->master_group);
     }
+
+    if (self_bif->slot_type == DEV_STATE_MASTER) {
+        reg_boards_check(mif);
+    }
     
     return 0;
 }
@@ -191,7 +223,7 @@ master_disp_regester(master_info_t *mif, char *msg, int slotid)
     static int conter = 0;
 
     board_info_t bif_tmp;
-    int ret = 0;
+    board_info_t *bif_ptr = NULL;
 
     bif_tmp.slot_id = msg_head->slot_id;
     bif_tmp.slot_type = msg_head->slot_type;
@@ -200,6 +232,15 @@ master_disp_regester(master_info_t *mif, char *msg, int slotid)
     snprintf((char *)bif_tmp.hw_version, sizeof(bif_tmp.hw_version), "%s", reg->hwVersion);
     snprintf((char *)bif_tmp.sw_version, sizeof(bif_tmp.sw_version), "%s", reg->swVersion);
     bif_tmp.timeout_chk = 0;
+    
+    bif_ptr = reg_boards_search(mif, bif_tmp.slot_id);
+    if (bif_ptr != NULL) {
+        dev_board_info_update_state(bif_ptr, &bif_tmp);
+    } else {
+        bif_ptr = dev_board_info_new();
+        memcpy(bif_ptr, &bif_tmp, sizeof(bif_tmp));
+        reg_boards_add(mif, bif_ptr);
+    }
 
     dev_sent_msg(rt->ofd, slotid, dev_register_ack(1));
     return 0;
@@ -211,7 +252,20 @@ master_disp_heartbeat(master_info_t *mif, char *msg, int slotid)
     dev_routine_t *rt = (dev_routine_t *)mif->rt;
     msg_head_t *msg_head = (msg_head_t *)msg;
     msg_heartbeat_t *heartbeat = (msg_heartbeat_t *)msg_head->data;
-    static int conter = 0;
+
+    board_info_t bif_tmp;
+    board_info_t *bif_ptr = NULL;
+
+    bif_tmp.slot_id = msg_head->slot_id;
+    bif_tmp.slot_type = msg_head->slot_type;
+    bif_tmp.board_type = ntohs(msg_head->board_type);
+    bif_tmp.uptime = ntohll(heartbeat->uptime);
+    bif_tmp.timeout_chk = 0;
+
+    bif_ptr = reg_boards_search(mif, bif_tmp.slot_id);
+    if (bif_ptr != NULL) {
+        dev_board_info_update_state(bif_ptr, &bif_tmp);
+    }
     return 0;
 }
 
