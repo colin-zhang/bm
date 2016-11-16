@@ -5,6 +5,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
+#include "dev_event.h"
 
 static dev_event_loop_t * deafult_loop = NULL;
 
@@ -212,6 +213,8 @@ dev_event_loop_remove(dev_event_loop_t* loop, dev_event_t *event_ptr)
     dbg_Print("list num = %d \n", dev_event_list_get_num(loop->event_list));
 
     fd = dev_event_get_fd(event_ptr);
+    ev.data.fd = fd;
+    ev.events = dev_event_get_ep_type(event_ptr);
     if (-1 == epoll_ctl(loop->ep_fd, EPOLL_CTL_DEL, fd, &ev)) {
         dbg_Print("epoll_ctl: %s\n", strerror(errno));
         return -1;
@@ -222,6 +225,19 @@ dev_event_loop_remove(dev_event_loop_t* loop, dev_event_t *event_ptr)
 int 
 dev_event_loop_pause(dev_event_loop_t* loop, dev_event_t *event_ptr)
 {
+    dev_epoll_type_t ev_type;
+    struct epoll_event ev;
+    int fd;
+
+    fd = dev_event_get_fd(event_ptr);
+    ev.data.fd = fd;
+    ev_type = dev_event_get_ep_type(event_ptr);
+    if (ev_type & DEV_EPOLLIN) ev_type &= (~DEV_EPOLLIN);
+    ev.events = ev_type;
+    if (-1 == epoll_ctl(loop->ep_fd, EPOLL_CTL_MOD, fd, &ev)) {
+        dbg_Print("epoll_ctl: %s\n", strerror(errno));
+        return -1;
+    }
     return 0;
 }
 
