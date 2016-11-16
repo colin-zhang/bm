@@ -18,6 +18,7 @@ typedef struct io_info
     int master_slot;
     int rev_buff_len;
     char *rev_buff;
+    long state_conter;
 }io_info_t;
 
 static int 
@@ -26,9 +27,14 @@ io_checker(void *ptr, void *ptr_self)
     io_info_t *ioif = (io_info_t *)ptr_self;
     dev_routine_t *rt = (dev_routine_t *)ioif->rt;
     board_info_t *self_bif = (board_info_t *)(ioif->rt->self_info);
-        
-    printf("io_checker\n");
 
+    static  long state_conter_bak = -1;
+
+    if (ioif->state_conter == state_conter_bak
+        && self_bif->slot_type != DEV_STATE_IO) {
+        self_bif->slot_type = DEV_STATE_IO;
+    }
+    state_conter_bak = ioif->state_conter;
     return 0;
 }
 
@@ -41,12 +47,19 @@ io_disp_probe(io_info_t *ioif, char *msg, int slotid)
     board_info_t *self_bif = (board_info_t *)(ioif->rt->self_info);
 
     if (msg_head->slot_type == DEV_STATE_MASTER ) {
-        if (self_bif->slot_type == DEV_STATE_IO) {
-            printf("slotid = %d , dev_io_register\n", slotid);
-            dev_sent_msg(rt->ofd, slotid, dev_io_register(1));
-        } else {
-            printf("slotid = %d , dev_heart_beat\n", slotid);
-            dev_sent_msg(rt->ofd, slotid, dev_heart_beat(1));
+        switch (self_bif->slot_type) {
+            case DEV_STATE_IO:
+                dev_sent_msg(rt->ofd, slotid, dev_io_register(1));
+                break;
+            case DEV_STATE_IO_REG: 
+                if (slotid == ioif->master_slot) {
+                    ioif->state_conter++;
+                }
+                dev_sent_msg(rt->ofd, slotid, dev_heart_beat(1)); 
+                break;
+            default:
+                dev_sent_msg(rt->ofd, slotid, dev_heart_beat(1));
+                break;
         }
     }
     return 0;

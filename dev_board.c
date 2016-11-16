@@ -88,6 +88,18 @@ dev_master_group_set_chief(dev_master_group_t *dmg, int index)
     }
     return 0;
 }
+/* 
+dev_master_uptime_compare
+a > b return 1
+*/
+static inline int dev_muc(long a, long b)
+{
+    if ( a > b + 1) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
 
 static int
 dev_master_group_select(dev_master_group_t *dmg, int *them, int num)
@@ -97,7 +109,7 @@ dev_master_group_select(dev_master_group_t *dmg, int *them, int num)
     base_index = them[0];
     for (i = 1; i < dmg->count && i < num; i++) {
         index = them[i];
-        if (dmg->member[index]->uptime > dmg->member[base_index]->uptime) {
+        if (dev_muc(dmg->member[index]->uptime, dmg->member[base_index]->uptime)) {
             base_index = index;
         } else if (dmg->member[index]->uptime == dmg->member[base_index]->uptime) {
             if (dmg->member[index]->slot_id > dmg->member[base_index]->slot_id) {
