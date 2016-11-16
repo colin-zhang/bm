@@ -6,5 +6,7 @@ int dev_find_proc_pid(const char *proc_name);
 
 int dev_daemon_init(const char *daemon_name);
 
+int dev_check_pid(const char *daemon_name);
+
 #endif
 

@@ -82,13 +82,12 @@ reg_boards_search(master_info_t *mif, int slot_id)
 int
 reg_boards_add(master_info_t *mif, board_info_t *bif)
 {
-    int index = reg_boards_bsearch(mif, bif->slot_id);\
+    int index = reg_boards_bsearch(mif, bif->slot_id);
     if (index < 0) {
-        return -1;
+        mif->boards[mif->reg_board_num] = bif;
+        mif->reg_board_num++;
+        reg_boards_sort_by_slotid(mif);
     }
-    mif->boards[mif->reg_board_num] = bif;
-    mif->reg_board_num++;
-    reg_boards_sort_by_slotid(mif);
     return 0;
 }
 
@@ -145,10 +144,17 @@ void
 reg_board_print(master_info_t *mif)
 {
     int i;
+
+    printf("register board number = %d\n", mif->reg_board_num);
+
     for (i = 0; i < mif->reg_board_num; i++) {
-        printf("%d\t", mif->boards[i]->slot_id);
+        printf(
+            "slotid=%d"
+            ", slotype=%d"
+            "  \n", 
+            mif->boards[i]->slot_id,
+            mif->boards[i]->slot_type);
     }
-    printf("end\n");
 }
 
 static int 
@@ -164,7 +170,7 @@ probe_master_hander(void *ptr, void *ptr_self)
         master_slot = dev_master_group_chief_slotid(rt->master_group);
         dev_sent_msg(mif->rt->ofd, master_slot, dev_master_probe(1, 0));
     } else {*/
-    for (i = 1; i < 14; i++) {
+    for (i = 1; i <= 14; i++) {
          if (i != self_bif->slot_id) {
             dev_sent_msg(mif->rt->ofd, i, dev_master_probe(1, 0));
          }
@@ -190,6 +196,8 @@ master_checker(void *ptr, void *ptr_self)
         reg_boards_check(mif);
     }
     
+    reg_board_print(mif);
+
     return 0;
 }
 
@@ -233,6 +241,8 @@ master_disp_regester(master_info_t *mif, char *msg, int slotid)
     snprintf((char *)bif_tmp.sw_version, sizeof(bif_tmp.sw_version), "%s", reg->swVersion);
     bif_tmp.timeout_chk = 0;
     
+
+    printf("bif_tmp.slot_id = %d\n", bif_tmp.slot_id);
     bif_ptr = reg_boards_search(mif, bif_tmp.slot_id);
     if (bif_ptr != NULL) {
         dev_board_info_update_state(bif_ptr, &bif_tmp);
@@ -241,6 +251,9 @@ master_disp_regester(master_info_t *mif, char *msg, int slotid)
         memcpy(bif_ptr, &bif_tmp, sizeof(bif_tmp));
         reg_boards_add(mif, bif_ptr);
     }
+
+
+    reg_board_print(mif);
 
     dev_sent_msg(rt->ofd, slotid, dev_register_ack(1));
     return 0;
@@ -261,6 +274,8 @@ master_disp_heartbeat(master_info_t *mif, char *msg, int slotid)
     bif_tmp.board_type = ntohs(msg_head->board_type);
     bif_tmp.uptime = ntohll(heartbeat->uptime);
     bif_tmp.timeout_chk = 0;
+
+    printf("hearbeat from %d\n", bif_tmp.slot_id);
 
     bif_ptr = reg_boards_search(mif, bif_tmp.slot_id);
     if (bif_ptr != NULL) {

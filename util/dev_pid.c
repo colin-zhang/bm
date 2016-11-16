@@ -10,7 +10,7 @@
 #include <sys/file.h>
 #include <fcntl.h>
 
-static int
+int
 dev_check_pid(const char *daemon_name) 
 {
     int pid = 0;

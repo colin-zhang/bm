@@ -26,7 +26,9 @@ io_checker(void *ptr, void *ptr_self)
     io_info_t *ioif = (io_info_t *)ptr_self;
     dev_routine_t *rt = (dev_routine_t *)ioif->rt;
     board_info_t *self_bif = (board_info_t *)(ioif->rt->self_info);
-    
+        
+    printf("io_checker\n");
+
     return 0;
 }
 
@@ -40,8 +42,10 @@ io_disp_probe(io_info_t *ioif, char *msg, int slotid)
 
     if (msg_head->slot_type == DEV_STATE_MASTER ) {
         if (self_bif->slot_type == DEV_STATE_IO) {
+            printf("slotid = %d , dev_io_register\n", slotid);
             dev_sent_msg(rt->ofd, slotid, dev_io_register(1));
         } else {
+            printf("slotid = %d , dev_heart_beat\n", slotid);
             dev_sent_msg(rt->ofd, slotid, dev_heart_beat(1));
         }
     }
@@ -56,10 +60,11 @@ io_disp_register_ack(io_info_t *ioif, char *msg, int slotid)
     msg_probe_t *probe = (msg_probe_t *)msg_head->data;
     board_info_t *self_bif = (board_info_t *)(ioif->rt->self_info);
 
-    if (msg_head->slot_type == DEV_STATE_MASTER ) {
+    if (msg_head->slot_type == DEV_STATE_MASTER) {
         if (self_bif->slot_type == DEV_STATE_IO) {
             ioif->master_slot = slotid;
             self_bif->slot_type = DEV_REGISTER;
+            printf("regestter\n");
         }
     }
     return 0;
@@ -117,7 +122,7 @@ dev_io_creat(void *data)
     dev_event_timer_add(rt->timer, ioif->check_timer);
 
     ioif->rev_buff_len = 1024;
-    ioif->rev_buff = calloc(1, sizeof(ioif->rev_buff_len));
+    ioif->rev_buff = calloc(1, ioif->rev_buff_len);
     if (ioif->rev_buff == NULL) {
         exit(-1);
     }

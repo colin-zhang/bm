@@ -6,7 +6,6 @@
 #include "dev_protocol.h"
 #include "dev_board.h"
 
-
 static char protocol_buf[2048] = {0};
 static int portNum = 8888;
 static const int dev_protocol_version = 0x02;
@@ -136,7 +135,7 @@ dev_sent_msg(int fd, int slotid, int msg_len)
     return 0;
 }
 
-
+/*
 int
 dev_sent_msg_array(int fd, slotid_array_t sid_array, int len)
 {
@@ -164,5 +163,5 @@ dev_reply_msg(int fd, slotid_array_t sid_array, int len)
 }
 
 
-
+*/
 
