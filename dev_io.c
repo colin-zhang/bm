@@ -15,6 +15,7 @@ typedef struct io_info
 {
     dev_routine_t *rt;
     dev_timer_ev_t *check_timer;
+    dev_timer_ev_t *master_timeout;
     int master_slot;
     int rev_buff_len;
     char *rev_buff;
@@ -28,13 +29,20 @@ io_checker(void *ptr, void *ptr_self)
     dev_routine_t *rt = (dev_routine_t *)ioif->rt;
     board_info_t *self_bif = (board_info_t *)(ioif->rt->self_info);
 
-    static  long state_conter_bak = -1;
+    return 0;
+}
 
-    if (ioif->state_conter == state_conter_bak
-        && self_bif->slot_type != DEV_STATE_IO) {
+static int 
+dev_io_master_timeout(void *ptr, void *ptr_self)
+{
+    io_info_t *ioif = (io_info_t *)ptr_self;
+    dev_routine_t *rt = (dev_routine_t *)ioif->rt;
+    board_info_t *self_bif = (board_info_t *)(ioif->rt->self_info);
+    
+    if (self_bif->slot_type != DEV_STATE_IO) {
         self_bif->slot_type = DEV_STATE_IO;
     }
-    state_conter_bak = ioif->state_conter;
+    dev_sub_timer_modify_timeout(ioif->master_timeout, (double)UINT32_MAX);
     return 0;
 }
 
@@ -54,6 +62,7 @@ io_disp_probe(io_info_t *ioif, char *msg, int slotid)
             case DEV_STATE_IO_REG: 
                 if (slotid == ioif->master_slot) {
                     ioif->state_conter++;
+                    dev_sub_timer_modify_timeout(ioif->master_timeout, 2.0);
                 }
                 dev_sent_msg(rt->ofd, slotid, dev_heart_beat(1)); 
                 break;
@@ -131,8 +140,13 @@ dev_io_creat(void *data)
     if (ioif->check_timer == NULL) {
         exit(-1);
     }
+    ioif->master_timeout = dev_sub_timer_creat((double)UINT32_MAX, 0, dev_io_master_timeout, ioif);
+    if (ioif->master_timeout == NULL) {
+        exit(-1);
+    }
 
     dev_event_timer_add(rt->timer, ioif->check_timer);
+    dev_event_timer_add(rt->timer, ioif->master_timeout);
 
     ioif->rev_buff_len = 1024;
     ioif->rev_buff = calloc(1, ioif->rev_buff_len);
