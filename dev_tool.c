@@ -18,8 +18,8 @@ static inline void
 api_msg_head(dev_api_msg_head_t *msg, uint8_t type, uint16_t len)
 {
     msg->ver = 0x01;
-    msg->type = type;
-    if (len) msg->date_len = htons(len);
+    msg->cmd = type;
+    if (len) msg->data_len = htons(len);
 }
 
 static int 

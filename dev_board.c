@@ -95,7 +95,7 @@ a > b return 1
 */
 static inline int dev_muc(long a, long b)
 {
-    if ( a > b + 1) {
+    if ( a > b + 5) {
         return 1;
     } else {
         return 0;

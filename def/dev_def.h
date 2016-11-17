@@ -14,6 +14,7 @@
 #include <fcntl.h>
 #include <stdint.h>
 #include <string.h>
+#include <strings.h>
 #include <stdbool.h>
 #include <errno.h>
 
