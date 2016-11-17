@@ -2,7 +2,7 @@ PRJ_TARGET = bmd
 PRJ_TARGET_TYPE = exe
 
 ifndef PRJ_DEBUG
-PRJ_DEBUG = no
+PRJ_DEBUG = yes
 endif
 MK_DIR ?= $(PWD)
 
@@ -29,6 +29,6 @@ PRJ_SRC = 	\
 
 #PRJ_CFLAG 
 PRJ_LDFLAG = -lrt 
-PRJ_CFLAG = -D UWARE_DEFAULT_IP_DOMAIN=\"192.168.11.0\"  -Os
+PRJ_CFLAG = -D UWARE_DEFAULT_IP_DOMAIN=\"192.168.11.0\" 
 
 include ${MK_DIR}/main.mk

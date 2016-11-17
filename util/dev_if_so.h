@@ -1,6 +1,8 @@
 #ifndef _DEV_IF_SO_H
 #define _DEV_IF_SO_H 
 #include <netinet/in.h>
+#include <stdint.h>
+#include <stdbool.h>
 
 int dev_get_port(unsigned short port);
 

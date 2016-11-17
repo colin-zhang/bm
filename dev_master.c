@@ -348,7 +348,6 @@ master_io_disp(void *ptr)
         case DEV_HEARTBEAT:
             master_disp_heartbeat(mif, rsv_data, rsv_slot);
         default:
-            dev_board_common_disp(mif->rt, msg_head->type);
             break;
     }
     

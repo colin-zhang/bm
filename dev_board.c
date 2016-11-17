@@ -9,6 +9,7 @@
 #include "util/dev_pid.h"
 
 #include "dev_board.h"
+#include "dev_board_api.h"
 
 #define MAX_MASTER_NUM (4)
 
@@ -200,7 +201,6 @@ dev_board_rt_init(int *type)
         exit(-1);
     }
     rt->timer = dev_event_timer_creat(50, rt);
-
     rt->self_info = dev_board_info_new();
     rt->master_group = dev_master_group_creat(MAX_MASTER_NUM);    
 
@@ -209,6 +209,7 @@ dev_board_rt_init(int *type)
 
     rt->ifd = dev_udp_port_creat(rt->self_info->slot_id, dev_protocol_port());
     rt->ofd = dev_udp_client_creat();
+    rt->board_api = dev_board_api_init(rt);
     
     switch (rt->self_info->slot_type) {
         case DEV_STATE_MASTER:

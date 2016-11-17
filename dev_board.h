@@ -61,6 +61,7 @@ typedef struct dev_routine
     dev_event_t *timer;
     int ifd;
     int ofd;
+    dev_event_t *board_api;
     board_info_t *self_info;
     dev_master_group_t *master_group;
     void *td;

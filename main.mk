@@ -14,6 +14,8 @@ OBJS = $(patsubst $(notdir %.c), $(BUILD_DIR)/%.o, $(PRJ_SRC))
 LDFLAGS += $(PRJ_LDFLAG)
 ifeq "$(PRJ_DEBUG)" "yes"
 CFLAGS  += -ggdb -g3 -O0
+else
+CFLAGS  += -oS
 endif
 CFLAGS  += -Wall -Werror -Wno-unused -Wno-unused-variable $(PRJ_CFLAG)
 

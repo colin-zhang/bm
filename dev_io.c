@@ -112,7 +112,6 @@ io_io_disp(void *ptr)
             io_disp_register_ack(ioif, ioif->rev_buff, rsv_slot);
             break;
         default:
-            dev_board_common_disp(ioif->rt, msg_head->type);
             break;
     }
     return 0;

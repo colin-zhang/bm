@@ -11,6 +11,8 @@
 #include <string.h>
 #include <stdbool.h>
 
+#include "dev_if_so.h"
+
 #ifndef UWARE_DEFAULT_IP_
 #define UWARE_DEFAULT_IP_ "192.168.168.0"
 #endif

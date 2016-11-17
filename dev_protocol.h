@@ -30,7 +30,7 @@ enum protocol_type
     DEV_HEARTBEAT,
     DEV_REGISTER,
     DEV_REGISTER_ACK,
-    DEV_REBOOT,
+    DEV_SET_MASTER,
     DEV_CMD_MAX
 };
 
@@ -86,6 +86,8 @@ int dev_io_register(int seq);
 int dev_register_ack(int seq);
 
 int dev_heart_beat(int seq);
+
+int dev_set_master(void);
 
 int dev_sent_msg(int fd, int slotid, int msg_len);
 
