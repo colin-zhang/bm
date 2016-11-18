@@ -129,15 +129,17 @@ api_boardinfo(int slotid)
     b_info.slot_id = msg.board_info.slot_id;
     b_info.slot_type = msg.board_info.slot_type;
     b_info.board_type = ntohs(msg.board_info.board_type);
+    b_info.master_slotid = ntohs(msg.board_info.master_slotid);
     b_info.uptime = ntohl(msg.board_info.uptime);
     snprintf((char *)b_info.hw_version, sizeof(b_info.hw_version), "%s", msg.board_info.hw_version);
     snprintf((char *)b_info.sw_version, sizeof(b_info.hw_version), "%s", msg.board_info.sw_version);
 
-    printf("slot_id=%d, slot_type=%d, board_type=%08x, uptime=%d, hVer=%s, sVer=%s\n", 
+    printf("slot_id=%d, slot_type=%d, board_type=%08x, uptime=%d, master_slotid=%d, hVer=%s, sVer=%s\n", 
             b_info.slot_id, 
             b_info.slot_type,
             b_info.board_type, 
             b_info.uptime,
+            b_info.master_slotid,
             b_info.hw_version,
             b_info.sw_version);
 

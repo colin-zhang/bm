@@ -62,11 +62,13 @@ dev_api_get_board_info(void *priv, const int8_t *data, uint16_t len, int8_t *ack
     *ack_len = sizeof(dev_api_board_info_t);
 
     printf("dev_api_get_board_info \n");
+    printf("priv_ptr->master_group->chiet_slotid = %d \n", priv_ptr->master_group->chiet_slotid);
 
     api_bif->slot_id = (priv_ptr->self_info->slot_id);
     api_bif->slot_type = (priv_ptr->self_info->slot_type);
     api_bif->board_type = htons(priv_ptr->self_info->board_type);
     api_bif->uptime = htonl(dev_sys_uptime());
+    api_bif->master_slotid = priv_ptr->master_group->chiet_slotid;
     snprintf((char *)api_bif->hw_version, sizeof(api_bif->hw_version), "%s", priv_ptr->self_info->hw_version);
     snprintf((char *)api_bif->sw_version, sizeof(api_bif->sw_version), "%s", priv_ptr->self_info->sw_version);
     return 0;

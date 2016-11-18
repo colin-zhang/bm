@@ -44,9 +44,10 @@ typedef struct dev_master_group
 {
     int max_size;
     int count;
-    int chief_index;
-    int update_flag;     // if 1 need fresh
     board_info_t **member;
+    int chief_index;
+    int chiet_slotid;
+    int update_flag;     // if 1 need fresh
 }dev_master_group_t;
 
 typedef struct dev_pkg_counter
@@ -73,7 +74,6 @@ board_info_t *dev_board_info_new(void);
 void dev_board_info_update_state(board_info_t *to, board_info_t *from);
 
 dev_routine_t *dev_board_rt_init(int *type);
-
 
 
 int dev_master_group_probe_timeout_check(dev_master_group_t *dmg, int from);

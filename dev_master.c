@@ -368,7 +368,7 @@ dev_master_info_init(void *rt)
     mif_ptr->reg_board_num = 0;
     mif_ptr->rt = (dev_routine_t *)rt;
 
-    mif_ptr->probe_timer = dev_sub_timer_creat(0.3, 0, probe_master_hander, mif_ptr);
+    mif_ptr->probe_timer = dev_sub_timer_creat(0.5, 0, probe_master_hander, mif_ptr);
     if (mif_ptr->probe_timer == NULL) {
         exit(-1);
     }
@@ -376,7 +376,7 @@ dev_master_info_init(void *rt)
     if (mif_ptr->check_timer == NULL) {
         exit(-1);
     }
-    mif_ptr->vote_timer = dev_sub_timer_creat(1.8, 1, master_elect, mif_ptr);
+    mif_ptr->vote_timer = dev_sub_timer_creat(1.5, 1, master_elect, mif_ptr);
     if (mif_ptr->vote_timer == NULL) {
         exit(-1);
     }

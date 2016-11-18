@@ -110,6 +110,7 @@ dev_master_group_select(dev_master_group_t *dmg, int *them, int num)
     base_index = them[0];
     for (i = 1; i < dmg->count && i < num; i++) {
         index = them[i];
+        printf("a=%ld, b=%ld\n", dmg->member[index]->uptime, dmg->member[base_index]->uptime);
         if (dev_muc(dmg->member[index]->uptime, dmg->member[base_index]->uptime)) {
             base_index = index;
         } else if (dmg->member[index]->uptime == dmg->member[base_index]->uptime) {
@@ -143,7 +144,7 @@ dev_master_group_select_chief(dev_master_group_t *dmg)
     }
     index = dev_master_group_select(dmg, select_indexs, num);
     dev_master_group_set_chief(dmg, index);
-    printf("chief slot_id = [%d]\n", dev_master_group_chief_slotid(dmg));
+    printf("index = %d, dmg->count = %d, chief slot_id = [%d]\n", index, dmg->count, dev_master_group_chief_slotid(dmg));
     return index;
 }
 

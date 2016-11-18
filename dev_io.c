@@ -85,8 +85,9 @@ io_disp_register_ack(io_info_t *ioif, char *msg, int slotid)
     if (msg_head->slot_type == DEV_STATE_MASTER) {
         if (self_bif->slot_type == DEV_STATE_IO) {
             ioif->master_slot = slotid;
+            rt->master_group->chiet_slotid = slotid;
             self_bif->slot_type = DEV_REGISTER;
-            printf("regestter\n");
+            printf("regestter, rt->master_group->chiet_slotid = %d\n", rt->master_group->chiet_slotid);
         }
     }
     return 0;

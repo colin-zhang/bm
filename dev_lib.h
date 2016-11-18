@@ -30,6 +30,7 @@ typedef struct dev_api_board_info
     uint8_t slot_type; // board_state
     uint16_t board_type;
     uint32_t uptime;
+    uint8_t  master_slotid;
     int8_t hw_version[32];
     int8_t sw_version[32];
 } __attribute__((packed))dev_api_board_info_t;
