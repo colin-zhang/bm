@@ -61,6 +61,10 @@ dev_get_id_by_addr(struct sockaddr_in *addr, int *slot_id)
     char ip[32] = {0};
     int slot;
 
+    if (slot_id == NULL) {
+        return -1;
+    }
+
     if (addr == NULL) {
         printf("dev_get_id_by_addr, addr is NULL \n");
         *slot_id = -1;

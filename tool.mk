@@ -2,7 +2,7 @@ PRJ_TARGET = bm_tool
 PRJ_TARGET_TYPE = exe
 
 ifndef PRJ_DEBUG
-PRJ_DEBUG = no
+PRJ_DEBUG = yes
 endif
 MK_DIR ?= $(PWD)
 
@@ -14,6 +14,6 @@ PRJ_SRC = 	\
 
 #PRJ_CFLAG 
 PRJ_LDFLAG = 
-PRJ_CFLAG =  -Os
+PRJ_CFLAG =  
 
 include ${MK_DIR}/main.mk

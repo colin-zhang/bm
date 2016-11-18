@@ -12,7 +12,6 @@
 #include "dev_master.h"
 #include "dev_board_api.h"
 
-
 int 
 reg_board_info_cmp_slot_id(const void *a, const void *b)
 {
@@ -180,7 +179,6 @@ probe_master_hander(void *ptr, void *ptr_self)
     return 0;
 }
 
-
 static int 
 master_checker(void *ptr, void *ptr_self)
 {
@@ -283,7 +281,6 @@ master_disp_heartbeat(master_info_t *mif, char *msg, int slotid)
     }
     return 0;
 }
-
 
 static int 
 master_disp_probe(master_info_t *mif, char *msg, int slotid)
@@ -405,5 +402,3 @@ dev_master_creat(void *data)
 
     return ev_ptr;
 }
-
-

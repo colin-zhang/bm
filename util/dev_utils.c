@@ -29,40 +29,64 @@ dev_sys_uptime(void)
 time_t
 get_timespec_sec(void)
 {
-   struct timespec curr = {0,};
-   clock_gettime(CLOCK_MONOTONIC, &curr);
-   return curr.tv_sec;
+    struct timespec curr = {0,};
+    clock_gettime(CLOCK_MONOTONIC, &curr);
+    return curr.tv_sec;
 }
 
 
+static union
+{
+    uint8_t a[4];
+    uint32_t ul;
+} check_endian = {{'L', '?', '?', 'B'}};
+#define CHECK_ENDIAN ((uint8_t)check_endian.ul)
+
 uint32_t SwapShort(uint16_t a)
 {
-  a = ((a & 0x00FF) << 8) | ((a & 0xFF00) >> 8);
-  return a;
+    a = ((a & 0x00FF) << 8) | ((a & 0xFF00) >> 8);
+    return a;
 }
 
 uint32_t SwapWord(uint32_t a)
 {
-  a = ((a & 0x000000FF) << 24) |
-      ((a & 0x0000FF00) <<  8) |
-      ((a & 0x00FF0000) >>  8) |
-      ((a & 0xFF000000) >> 24);
-  return a;
+    a = ((a & 0x000000FF) << 24) |
+        ((a & 0x0000FF00) <<  8) |
+        ((a & 0x00FF0000) >>  8) |
+        ((a & 0xFF000000) >> 24);
+    return a;
 }
 
 uint64_t SwapDWord(uint64_t a)
 {
-  a = ((a & 0x00000000000000FFULL) << 56) | 
-      ((a & 0x000000000000FF00ULL) << 40) | 
-      ((a & 0x0000000000FF0000ULL) << 24) | 
-      ((a & 0x00000000FF000000ULL) <<  8) | 
-      ((a & 0x000000FF00000000ULL) >>  8) | 
-      ((a & 0x0000FF0000000000ULL) >> 24) | 
-      ((a & 0x00FF000000000000ULL) >> 40) | 
-      ((a & 0xFF00000000000000ULL) >> 56);
-  return a;
+    a = ((a & 0x00000000000000FFULL) << 56) | 
+        ((a & 0x000000000000FF00ULL) << 40) | 
+        ((a & 0x0000000000FF0000ULL) << 24) | 
+        ((a & 0x00000000FF000000ULL) <<  8) | 
+        ((a & 0x000000FF00000000ULL) >>  8) | 
+        ((a & 0x0000FF0000000000ULL) >> 24) | 
+        ((a & 0x00FF000000000000ULL) >> 40) | 
+        ((a & 0xFF00000000000000ULL) >> 56);
+    return a;
 }
 
+uint64_t dev_ntohll(uint64_t a)
+{
+    uint64_t x = a;
+    if (CHECK_ENDIAN == 'L') {
+        x = SwapDWord(a);
+    } 
+    return x;
+}
+
+uint64_t dev_htonll(uint64_t a)
+{
+    uint64_t x = a;
+    if (CHECK_ENDIAN == 'L') {
+        x = SwapDWord(a);
+    } 
+    return x;
+}
 
 int 
 dev_timespec_cmp(struct timespec *ts1, struct timespec *ts2)
@@ -84,14 +108,11 @@ dev_timespec_cmp(struct timespec *ts1, struct timespec *ts2)
     }
 }
 
-
-
 void
 dev_timespec_add(struct timespec *ts1, struct timespec *ts2) 
 {
     ts1->tv_sec += ts2->tv_sec;
     ts1->tv_nsec += ts2->tv_nsec;
-
     if (ts1->tv_nsec >= DEV_ONE_SECOND) {
         ts1->tv_nsec %= DEV_ONE_SECOND;
         ts1->tv_sec++;
@@ -101,9 +122,7 @@ dev_timespec_add(struct timespec *ts1, struct timespec *ts2)
 int
 dev_timespec_minus(struct timespec *ts1, struct timespec *ts2) 
 {
-    int ret;
-
-    ret = dev_timespec_cmp(ts1, ts2);
+    int ret = dev_timespec_cmp(ts1, ts2);
     if (ret > 1000) {
         ts1->tv_sec = 0;
         ts1->tv_nsec -= ts2->tv_nsec; 

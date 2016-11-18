@@ -36,6 +36,7 @@ dev_msg_head(msg_head_t *msg, uint8_t type, uint16_t len)
     msg->board_type = htons(gp_bif->board_type);
     if (len) msg->len = htons(len);
 }
+
 /*
     uint8_t   slot;
     uint8_t   slot_type;
@@ -52,11 +53,12 @@ dev_master_probe(int seq, int flag)
     long uptime = dev_sys_uptime();
 
     probe->seq = htonl((uint32_t)seq);
-    probe->uptime = htonll((uint64_t)uptime);
+    probe->uptime = dev_htonll((uint64_t)uptime);
     probe->flag = htonl((uint32_t)flag);
     dev_msg_head(msg, DEV_RPROBE, sizeof(msg_probe_t));
     return (sizeof(msg_probe_t) + MSG_HEAD_LEN);
 }
+
 /*
     uint32_t  seq;
     uint32_t  time;
@@ -64,7 +66,6 @@ dev_master_probe(int seq, int flag)
     uint8_t   hwVersion[32];
     uint8_t   swVersion[32];
 */
-
 int 
 dev_master_probe_ack(int seq)
 {
@@ -73,14 +74,13 @@ dev_master_probe_ack(int seq)
     long uptime = dev_sys_uptime();
 
     probe_ack->seq = htonl((uint32_t)seq);
-    probe_ack->uptime = htonll((uint64_t)uptime);
+    probe_ack->uptime = dev_htonll((uint64_t)uptime);
     snprintf((char *)probe_ack->hwVersion, sizeof(probe_ack->hwVersion), "%s", gp_bif->hw_version);
     snprintf((char *)probe_ack->swVersion, sizeof(probe_ack->swVersion), "%s", gp_bif->sw_version);
 
     dev_msg_head(msg, DEV_RPROBE_ACK, sizeof(msg_probe_ack_t));
     return (sizeof(msg_probe_ack_t) + MSG_HEAD_LEN);
 }
-
 
 int 
 dev_io_register(int seq)
@@ -90,14 +90,13 @@ dev_io_register(int seq)
     long uptime = dev_sys_uptime();
 
     reg->seq = htonl((uint32_t)seq);
-    reg->uptime = htonll((uint64_t)uptime);
+    reg->uptime = dev_htonll((uint64_t)uptime);
     snprintf((char *)reg->hwVersion, sizeof(reg->hwVersion), "%s", gp_bif->hw_version);
     snprintf((char *)reg->swVersion, sizeof(reg->swVersion), "%s", gp_bif->sw_version);
 
     dev_msg_head(msg, DEV_REGISTER, sizeof(msg_register_t));
     return (sizeof(msg_register_t) + MSG_HEAD_LEN);
 }
-
 
 int 
 dev_register_ack(int seq)
@@ -106,7 +105,7 @@ dev_register_ack(int seq)
     msg_register_ack_t *reg_ack = (msg_register_ack_t *)msg->data;
 
     reg_ack->seq = htonl((uint32_t)seq);
-    reg_ack->sessionID = htonll(1);
+    reg_ack->sessionID = dev_htonll(1);
 
     dev_msg_head(msg, DEV_REGISTER_ACK, sizeof(msg_register_ack_t));
     return (sizeof(msg_register_t) + MSG_HEAD_LEN);
@@ -120,7 +119,7 @@ dev_heart_beat(int seq)
     long uptime = dev_sys_uptime();
 
     hearbeat->seq = htonl((uint32_t)seq);
-    hearbeat->uptime = htonll((uint64_t)uptime);
+    hearbeat->uptime = dev_htonll((uint64_t)uptime);
     
     dev_msg_head(msg, DEV_HEARTBEAT, sizeof(msg_heartbeat_t));
     return (sizeof(msg_heartbeat_t) + MSG_HEAD_LEN);
@@ -171,4 +170,3 @@ dev_reply_msg(int fd, slotid_array_t sid_array, int len)
 
 
 */
-
