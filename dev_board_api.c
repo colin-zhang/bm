@@ -30,7 +30,7 @@ api_msg_head(dev_api_msg_head_t *msg, uint8_t cmd, uint16_t len)
 {
     msg->ver = 0x01;
     msg->cmd = cmd;
-    //msg->code = 0x30;
+    msg->code = 0x30;
     if (len > 0) msg->data_len = htons(len);
     else msg->data_len = 0;
 }
@@ -41,8 +41,8 @@ api_msg_head_error(dev_api_msg_head_t *msg, uint8_t cmd, uint8_t code, const cha
     int len = 0;
     msg->ver = 0x01;
     msg->cmd = cmd;
-    //msg->code = code;
-    //len = snprintf((char *)msg->data, 32, "%s", err_msg);
+    msg->code = code;
+    len = snprintf((char *)msg->data, 32, "%s", err_msg);
     if (len > 0) msg->data_len = htons(len);
     else msg->data_len = 0;
 }
@@ -78,7 +78,8 @@ dev_api_disp(void *api_priv, dev_api_msg_head_t *msg_head, int8_t *ack_buf, uint
     int len = 0;
     dev_api_msg_head_t *msg_ack = (dev_api_msg_head_t *)ack_buf;
     if (dev_api_disp_table[msg_head->cmd] == NULL) {
-        //api_msg_head_error(msg_ack, msg_head->cmd, 0xE1, "not support");
+        api_msg_head_error(msg_ack, msg_head->cmd, 0xE1, "not support");
+        *ack_len = sizeof(dev_api_msg_t);
         return -1;
     }
     len = dev_api_disp_table[msg_head->cmd](api_priv, msg_head->data, msg_head->data_len, msg_ack->data, ack_len);
@@ -111,6 +112,8 @@ dev_api_io_disp(void *ptr)
     int ret = 0;
     struct sockaddr_in peer_addr;
 
+    printf("dev_api_io_disp\n");
+
     bzero(rsv_buff, sizeof(rsv_buff));
     dev_udp_receive(sockfd, rsv_buff, rsv_len, &peer_addr);
     dev_api_disp(priv_ptr, api_msg_head, (int8_t *)ack_buff, &ack_len);
@@ -128,7 +131,7 @@ dev_board_api_init(void *data)
     api_priv_t *priv_ptr;
 
     int fd = dev_udp_port_creat(rt->self_info->slot_id, api_port);
-    ev_ptr = dev_event_creat(fd, DEV_EVENT_IO, EPOLLIN, sizeof(api_priv_t));
+    ev_ptr = dev_event_creat(fd, DEV_EVENT_IO, EPOLLIN | DEV_EPOLLET, sizeof(api_priv_t));
     if (ev_ptr == NULL) {
         dbg_Print("ev_ptr, dev_event_creat\n");
         return NULL;

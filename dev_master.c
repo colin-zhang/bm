@@ -150,9 +150,12 @@ reg_board_print(master_info_t *mif)
         printf(
             "slotid=%d"
             ", slotype=%d"
+            ", uptime=%ld"
             "  \n", 
             mif->boards[i]->slot_id,
-            mif->boards[i]->slot_type);
+            mif->boards[i]->slot_type,
+            mif->boards[i]->uptime
+            );
     }
 }
 
@@ -179,7 +182,7 @@ probe_master_hander(void *ptr, void *ptr_self)
     return 0;
 }
 
-static int 
+static int
 master_checker(void *ptr, void *ptr_self)
 {
     master_info_t *mif = (master_info_t *)ptr_self;
@@ -240,7 +243,6 @@ master_disp_regester(master_info_t *mif, char *msg, int slotid)
     bif_tmp.timeout_chk = 0;
     
 
-    printf("bif_tmp.slot_id = %d\n", bif_tmp.slot_id);
     bif_ptr = reg_boards_search(mif, bif_tmp.slot_id);
     if (bif_ptr != NULL) {
         dev_board_info_update_state(bif_ptr, &bif_tmp);
@@ -273,8 +275,6 @@ master_disp_heartbeat(master_info_t *mif, char *msg, int slotid)
     bif_tmp.uptime = ntohll(heartbeat->uptime);
     bif_tmp.timeout_chk = 0;
 
-    printf("hearbeat from %d\n", bif_tmp.slot_id);
-
     bif_ptr = reg_boards_search(mif, bif_tmp.slot_id);
     if (bif_ptr != NULL) {
         dev_board_info_update_state(bif_ptr, &bif_tmp);
@@ -300,6 +300,7 @@ master_disp_probe_ack(master_info_t *mif, char *msg)
     dev_routine_t *rt = (dev_routine_t *)mif->rt;
     msg_head_t *msg_head = (msg_head_t *)msg;
     msg_probe_ack_t *probe_ack = (msg_probe_ack_t *)msg_head->data;
+    board_info_t *self_bif = (board_info_t *)(rt->self_info);
 
     board_info_t bif_tmp;
     int ret = 0;
@@ -314,6 +315,10 @@ master_disp_probe_ack(master_info_t *mif, char *msg)
     
     ret = dev_master_group_add(rt->master_group, &bif_tmp);
     if (bif_tmp.slot_type == DEV_STATE_TOBE_MASTER) {
+        dev_master_group_select_chief(rt->master_group);
+    }
+
+    if (self_bif->slot_type == DEV_STATE_MASTER && bif_tmp.slot_type == DEV_STATE_MASTER) {
         dev_master_group_select_chief(rt->master_group);
     }
 
@@ -389,7 +394,7 @@ dev_master_creat(void *data)
     dev_routine_t *rt = (dev_routine_t *)data;
     master_info_t *mif;
         
-    ev_ptr = dev_event_creat(rt->ifd, DEV_EVENT_IO, EPOLLIN , 0);
+    ev_ptr = dev_event_creat(rt->ifd, DEV_EVENT_IO, EPOLLIN | DEV_EPOLLET, 0);
     if (ev_ptr == NULL) {
         dbg_Print("ev_ptr, dev_event_creat\n");
         return NULL;

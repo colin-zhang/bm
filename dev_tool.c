@@ -79,7 +79,6 @@ api_cmd_receive(int fd, dev_api_msg_t *msg)
     int len = 0;
     if (ret > 0) {
         len = io_buff_len(fd);
-        printf("io buff len = %d\n", len);
         res = dev_udp_receive_con(fd, (char *)msg, sizeof(dev_api_msg_t));
         if (res < 0) { return -1; }
     } else if (ret == 0) {
@@ -91,10 +90,10 @@ api_cmd_receive(int fd, dev_api_msg_t *msg)
     }
 
     if (res > 0) {
-/*        if (msg->header.code != 0x30) {
-            fprintf(stderr, "error, %s\n", msg->error_msg);
+        if (msg->header.code != 0x30) {
+            fprintf(stderr, "error , %02hhx, %s\n", msg->header.code, msg->error_msg);
             return -1;
-        }*/
+        }
     } 
     return 0;
 }
@@ -151,7 +150,7 @@ api_test(int slotid)
     int fd, ret;
     dev_api_msg_t msg;
 
-    ret = api_cmd_sent(slotid, DEV_CMD_GET_BOARD_INFO, &fd);
+    ret = api_cmd_sent(slotid, 0xff, &fd);
     if (ret < 0) {
         close(fd);
         return -1;

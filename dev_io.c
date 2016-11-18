@@ -125,7 +125,7 @@ dev_io_creat(void *data)
     dev_routine_t *rt = (dev_routine_t *)data;
     io_info_t *ioif;
         
-    ev_ptr = dev_event_creat(rt->ifd, DEV_EVENT_IO, EPOLLIN , 0);
+    ev_ptr = dev_event_creat(rt->ifd, DEV_EVENT_IO, EPOLLIN | DEV_EPOLLET, 0);
     if (ev_ptr == NULL) {
         dbg_Print("ev_ptr, dev_event_creat\n");
         return NULL;
