@@ -7,7 +7,6 @@
 
 typedef int  (*timer_handler_t)(void *ev_data, void *self_data);
 
-
 typedef struct _dev_timer_ev_t 
 {
     int16_t repeat;        

@@ -18,7 +18,7 @@ typedef struct _priv_date_t
     struct timespec ts_curr;
 } priv_data_t;
 
-static int 
+static inline int 
 timespec_cmp(struct timespec *ts1, struct timespec *ts2)
 {
     if (ts1->tv_sec > ts2->tv_sec) {
@@ -106,7 +106,7 @@ dev_timerfd_relative_set(int fd, struct itimerspec *newValue)
     return timerfd_settime(fd, 0, newValue, NULL);
 }
 
-static int 
+static inline int 
 dev_set_relative_timerfd(int fd, double it_timeout, double interval_timeout)
 {
     struct itimerspec newValue;
@@ -121,7 +121,7 @@ dev_set_relative_timerfd(int fd, double it_timeout, double interval_timeout)
     return 0;
 }
 
-static struct itimerspec *
+static inline struct itimerspec *
 set_it_itimerspec(struct itimerspec *spec, double it_timeout, double interval_timeout) 
 {
     spec->it_value = get_it_timespec(it_timeout);
@@ -129,7 +129,7 @@ set_it_itimerspec(struct itimerspec *spec, double it_timeout, double interval_ti
     return spec;
 }
 
-static int 
+static inline int 
 dev_event_timer_cmp_l(void *ev1, void *ev2)
 {
     int ret = 0;
@@ -141,7 +141,7 @@ dev_event_timer_cmp_l(void *ev1, void *ev2)
     return 1;
 }
 
-static int 
+static inline int 
 dev_event_timer_handler(void *ptr)
 {
     struct itimerspec newValue;

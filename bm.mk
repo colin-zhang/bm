@@ -2,7 +2,7 @@ PRJ_TARGET = bmd
 PRJ_TARGET_TYPE = exe
 
 ifndef PRJ_DEBUG
-PRJ_DEBUG = yes
+PRJ_DEBUG = no
 endif
 MK_DIR ?= $(PWD)
 

@@ -15,7 +15,7 @@ LDFLAGS += $(PRJ_LDFLAG)
 ifeq "$(PRJ_DEBUG)" "yes"
 CFLAGS  += -ggdb -g3 -O0
 else
-CFLAGS  += -oS
+CFLAGS  += -o2
 endif
 CFLAGS  += -Wall -Werror -Wno-unused -Wno-unused-variable $(PRJ_CFLAG)
 

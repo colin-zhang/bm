@@ -253,7 +253,6 @@ master_disp_regester(master_info_t *mif, char *msg, int slotid)
         reg_boards_add(mif, bif_ptr);
     }
 
-
     reg_board_print(mif);
 
     dev_sent_msg(rt->ofd, slotid, dev_register_ack(1));
@@ -271,13 +270,12 @@ master_disp_heartbeat(master_info_t *mif, char *msg, int slotid)
     board_info_t *bif_ptr = NULL;
 
     bif_tmp.slot_id = msg_head->slot_id;
-    bif_tmp.slot_type = msg_head->slot_type;
-    bif_tmp.board_type = ntohs(msg_head->board_type);
-    bif_tmp.uptime = ntohll(heartbeat->uptime);
-    bif_tmp.timeout_chk = 0;
 
     bif_ptr = reg_boards_search(mif, bif_tmp.slot_id);
     if (bif_ptr != NULL) {
+        bif_tmp.slot_type = msg_head->slot_type;
+        bif_tmp.uptime = ntohll(heartbeat->uptime);
+        bif_tmp.timeout_chk = 0;
         dev_board_info_update_state(bif_ptr, &bif_tmp);
     }
     return 0;

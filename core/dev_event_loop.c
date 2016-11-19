@@ -9,7 +9,7 @@
 
 static dev_event_loop_t * deafult_loop = NULL;
 
-dev_event_list_t* 
+static dev_event_list_t* 
 dev_event_list_creat(int num) 
 {
     dev_event_list_t *list = NULL;
@@ -26,13 +26,13 @@ dev_event_list_creat(int num)
     return list;
 }
 
-int 
+static inline int 
 dev_event_list_get_num(dev_event_list_t *list)
 {
     return list->event_cnt;
 }
 
-void 
+static inline void 
 dev_event_list_destroy(dev_event_list_t *list) {
     dev_event_t *ev_ptr = NULL;
 
@@ -58,7 +58,7 @@ dev_event_list_add(dev_event_list_t *list, dev_event_t *event_ptr)
     return 0;
 }
 
-int 
+static int 
 dev_event_list_remove(dev_event_list_t *list, dev_event_t *event_ptr) 
 {
     dev_event_t *ev_ptr = NULL;
@@ -89,7 +89,7 @@ dev_event_list_remove(dev_event_list_t *list, dev_event_t *event_ptr)
     return 1;
 }
 
-dev_event_t *
+static dev_event_t *
 dev_event_list_find_by_fd(dev_event_list_t *list, int fd) 
 {
     dev_event_t *ev_ptr = NULL;
@@ -118,7 +118,8 @@ dev_event_loop_creat(int max_event)
     loop = (dev_event_loop_t *)calloc(1, sizeof(dev_event_loop_t));
 
     loop->ev_max = max_event;
-    loop->ep_fd = epoll_create1(0);
+    //loop->ep_fd = epoll_create1(0);
+    loop->ep_fd = epoll_create(max_event);
     if (loop->ep_fd == -1) {
         dbg_Print("create epoll:%s\n", strerror(errno));
         return NULL;

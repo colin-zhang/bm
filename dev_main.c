@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
         return devd_tool(argc, argv);
     }
 
-    if (dev_event_deafult_loop_init(100) == NULL) {
+    if (dev_event_deafult_loop_init(10) == NULL) {
         fprintf(stderr, "Fail to create deafult loop\n");
         exit(-1);
     }

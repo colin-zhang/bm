@@ -29,7 +29,7 @@ dev_heap_creat(int size, dev_heap_cmp_t cmp)
     return heap;
 }
 
-static int
+static inline int
 dev_heap_trickle_up(dev_heap_t *heap, int index)
 {
     void *tmp = heap->array[index];
@@ -42,7 +42,7 @@ dev_heap_trickle_up(dev_heap_t *heap, int index)
     return index;
 }
 
-static int
+static inline int
 dev_heap_tricle_down(dev_heap_t *heap, int index)
 {
     void *tmp = heap->array[index];

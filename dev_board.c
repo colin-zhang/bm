@@ -222,7 +222,7 @@ dev_board_rt_init(int *type)
     if (rt == NULL) {
         exit(-1);
     }
-    rt->timer = dev_event_timer_creat(50, rt);
+    rt->timer = dev_event_timer_creat(20, rt);
     rt->self_info = dev_board_info_new();
     rt->master_group = dev_master_group_creat(MAX_MASTER_NUM);    
 
