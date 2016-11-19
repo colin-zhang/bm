@@ -35,7 +35,6 @@ typedef struct dev_api_board_info
     int8_t sw_version[32];
 } __attribute__((packed))dev_api_board_info_t;
 
-
 typedef struct dev_api_msg
 {
     dev_api_msg_head_t  header;
