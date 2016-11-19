@@ -16,6 +16,7 @@ typedef struct io_info
     dev_routine_t *rt;
     dev_timer_ev_t *check_timer;
     dev_timer_ev_t *master_timeout;
+    dev_timer_ev_t *register_timer;
     int master_slot;
     int rev_buff_len;
     char *rev_buff;
@@ -29,6 +30,18 @@ io_checker(void *ptr, void *ptr_self)
     dev_routine_t *rt = (dev_routine_t *)ioif->rt;
     board_info_t *self_bif = (board_info_t *)(ioif->rt->self_info);
 
+    return 0;
+}
+
+static int 
+io_register_timerout(void *ptr, void *ptr_self)
+{
+    io_info_t *ioif = (io_info_t *)ptr_self;
+    board_info_t *self_bif = (board_info_t *)(ioif->rt->self_info);
+
+    if (self_bif->slot_type == DEV_STATE_IO_REG_WAIT) {
+        self_bif->slot_type = DEV_STATE_IO;
+    }
     return 0;
 }
 
@@ -54,10 +67,16 @@ io_disp_probe(io_info_t *ioif, char *msg, int slotid)
     msg_probe_t *probe = (msg_probe_t *)msg_head->data;
     board_info_t *self_bif = (board_info_t *)(ioif->rt->self_info);
 
-    if (msg_head->slot_type == DEV_STATE_MASTER ) {
+    if (msg_head->slot_type == DEV_STATE_MASTER) {
         switch (self_bif->slot_type) {
             case DEV_STATE_IO:
                 dev_sent_msg(rt->ofd, slotid, dev_io_register(1));
+                self_bif->slot_type = DEV_STATE_IO_REG_WAIT;
+                ioif->register_timer = dev_sub_timer_creat(1.0, 1, io_register_timerout, ioif);
+                if (ioif->register_timer == NULL) {
+                    exit(-1);
+                }
+                dev_event_timer_add(rt->timer, ioif->register_timer);
                 break;
             case DEV_STATE_IO_REG: 
                 if (slotid == ioif->master_slot) {
@@ -83,10 +102,11 @@ io_disp_register_ack(io_info_t *ioif, char *msg, int slotid)
     board_info_t *self_bif = (board_info_t *)(ioif->rt->self_info);
 
     if (msg_head->slot_type == DEV_STATE_MASTER) {
-        if (self_bif->slot_type == DEV_STATE_IO) {
+        if (self_bif->slot_type == DEV_STATE_IO_REG_WAIT) {
             ioif->master_slot = slotid;
             rt->master_group->chiet_slotid = slotid;
             self_bif->slot_type = DEV_REGISTER;
+            dev_sub_timer_remove(ioif->register_timer);
             printf("regestter, rt->master_group->chiet_slotid = %d\n", rt->master_group->chiet_slotid);
         }
     }
