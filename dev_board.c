@@ -50,6 +50,26 @@ dev_master_group_creat(int num)
     return dmg;
 }
 
+void 
+dev_master_group_print(dev_master_group_t *dmg)
+{
+    int i;
+
+    printf("num=%d chief_index=%d\n", dmg->count, dmg->chief_index);
+
+    for (i = 0; i < dmg->count; i++) {
+        printf(
+            "slotid=%d"
+            ", slotype=%d"
+            ", uptime=%ld"
+            "  \n", 
+            dmg->member[i]->slot_id,
+            dmg->member[i]->slot_type,
+            dmg->member[i]->uptime
+            );
+    }
+}
+
 static int 
 dev_master_group_search_by_slot(dev_master_group_t *dmg, int slot_id)
 {
@@ -95,7 +115,7 @@ a > b return 1
 */
 static inline int dev_muc(long a, long b)
 {
-    if ( a > b + 5) {
+    if ( a > b + 10) {
         return 1;
     } else {
         return 0;
@@ -114,7 +134,7 @@ dev_master_group_select(dev_master_group_t *dmg, int *them, int num)
         if (dev_muc(dmg->member[index]->uptime, dmg->member[base_index]->uptime)) {
             base_index = index;
         } else if (dmg->member[index]->uptime == dmg->member[base_index]->uptime) {
-            if (dmg->member[index]->slot_id > dmg->member[base_index]->slot_id) {
+            if (dmg->member[index]->slot_id < dmg->member[base_index]->slot_id) {
                 base_index = index;
             }
         }
@@ -144,7 +164,8 @@ dev_master_group_select_chief(dev_master_group_t *dmg)
     }
     index = dev_master_group_select(dmg, select_indexs, num);
     dev_master_group_set_chief(dmg, index);
-    printf("index = %d, dmg->count = %d, chief slot_id = [%d]\n", index, dmg->count, dev_master_group_chief_slotid(dmg));
+    dmg->chiet_slotid = dev_master_group_chief_slotid(dmg);
+    printf("index = %d, dmg->count = %d, chief slot_id = [%d]\n", index, dmg->count, dmg->chiet_slotid);
     return index;
 }
 

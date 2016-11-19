@@ -197,6 +197,7 @@ master_checker(void *ptr, void *ptr_self)
         reg_boards_check(mif);
     }
     
+    dev_master_group_print(rt->master_group);
     reg_board_print(mif);
 
     return 0;

@@ -84,4 +84,7 @@ int dev_master_group_add(dev_master_group_t *dmg, board_info_t * bif);
 int dev_master_group_select_chief(dev_master_group_t *dmg);
 int dev_master_group_chief_slotid(dev_master_group_t *dmg);
 
+
+void dev_master_group_print(dev_master_group_t *dmg);
+
 #endif
