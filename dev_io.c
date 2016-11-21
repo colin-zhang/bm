@@ -73,7 +73,7 @@ io_disp_probe(io_info_t *ioif, char *msg, int slotid)
             case DEV_STATE_IO:
                 dev_sent_msg(rt->ofd, slotid, dev_io_register(1));
                 self_bif->slot_type = DEV_STATE_IO_REG_WAIT;
-                ioif->register_timer = dev_sub_timer_creat(1.0, 1, io_register_timerout, ioif);
+                ioif->register_timer = dev_sub_timer_creat(5.0, 1, io_register_timerout, ioif);
                 if (ioif->register_timer == NULL) {
                     exit(-1);
                 }
