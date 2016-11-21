@@ -55,6 +55,16 @@ dev_api_reboot(void *priv, const int8_t *data, uint16_t len, int8_t *ack_buf, ui
 }
 
 static int 
+dev_api_set_master(void *priv, const int8_t *data, uint16_t len, int8_t *ack_buf, uint32_t *ack_len)
+{
+    api_priv_t *priv_ptr = (api_priv_t *)priv;
+    *ack_len = 0;
+
+    priv_ptr->self_info->slot_type = DEV_STATE_TOBE_MASTER;
+    return 0;
+}
+
+static int 
 dev_api_get_board_info(void *priv, const int8_t *data, uint16_t len, int8_t *ack_buf, uint32_t *ack_len)
 {
     api_priv_t *priv_ptr = (api_priv_t *)priv;
@@ -97,6 +107,7 @@ dev_api_table_init()
     bzero(dev_api_disp_table, sizeof(dev_api_disp_table));
     dev_api_disp_table[DEV_CMD_REBOOT] = dev_api_reboot;
     dev_api_disp_table[DEV_CMD_GET_BOARD_INFO] = dev_api_get_board_info;
+    dev_api_disp_table[DEV_CMD_SET_MASTER] = dev_api_set_master;
 }
 
 static int 

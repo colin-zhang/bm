@@ -22,6 +22,7 @@ enum dev_api_cmd_type
 {
     DEV_CMD_REBOOT = 1,
     DEV_CMD_GET_BOARD_INFO,
+    DEV_CMD_SET_MASTER,
 };
 
 typedef struct dev_api_board_info

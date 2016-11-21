@@ -42,6 +42,7 @@ io_register_timerout(void *ptr, void *ptr_self)
     if (self_bif->slot_type == DEV_STATE_IO_REG_WAIT) {
         self_bif->slot_type = DEV_STATE_IO;
     }
+    printf("%s\n", "io_register_timerout");
     return 0;
 }
 
@@ -82,8 +83,8 @@ io_disp_probe(io_info_t *ioif, char *msg, int slotid)
                 if (slotid == ioif->master_slot) {
                     ioif->state_conter++;
                     dev_sub_timer_modify_timeout(ioif->master_timeout, 2.0);
+                    dev_sent_msg(rt->ofd, slotid, dev_heart_beat(1));
                 }
-                dev_sent_msg(rt->ofd, slotid, dev_heart_beat(1)); 
                 break;
             default:
                 dev_sent_msg(rt->ofd, slotid, dev_heart_beat(1));

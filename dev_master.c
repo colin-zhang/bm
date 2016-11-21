@@ -177,7 +177,6 @@ probe_master_hander(void *ptr, void *ptr_self)
             dev_sent_msg(mif->rt->ofd, i, dev_master_probe(1, 0));
          }
     }
-
     rt->self_info->uptime = dev_sys_uptime();
     return 0;
 }
@@ -195,6 +194,8 @@ master_checker(void *ptr, void *ptr_self)
 
     if (self_bif->slot_type == DEV_STATE_MASTER) {
         reg_boards_check(mif);
+    } else if (self_bif->slot_type == DEV_STATE_TOBE_MASTER) {
+        dev_master_group_select_chief(rt->master_group);
     }
     
     dev_master_group_print(rt->master_group);
@@ -222,7 +223,7 @@ master_elect(void *ptr, void *ptr_self)
     return 0;
 }
 
-static char rsv_data[2048] = {0};
+static char rsv_data[1024] = {0};
 
 static int 
 master_disp_regester(master_info_t *mif, char *msg, int slotid)

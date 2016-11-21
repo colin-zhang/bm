@@ -166,6 +166,27 @@ api_test(int slotid)
     return 0;
 }
 
+static int 
+api_set_master(int slotid) 
+{
+    int fd, ret;
+    dev_api_msg_t msg;
+
+    ret = api_cmd_sent(slotid, DEV_CMD_SET_MASTER, &fd);
+    if (ret < 0) {
+        close(fd);
+        return -1;
+    }
+    ret = api_cmd_receive(fd, &msg);
+    if (ret < 0) {
+        close(fd);
+        return -1;
+    }
+    close(fd);
+    return 0;
+}
+
+
 int main(int argc, char *argv[])
 {
     int opt_index = 0, opt = 0;
@@ -178,6 +199,7 @@ int main(int argc, char *argv[])
         {"reboot", required_argument, 0, 2},
         {"info", required_argument, 0, 3},
         {"test", required_argument, 0, 4},
+        {"setmaster", required_argument, 0, 5},
     };
 
     while ((opt = getopt_long(argc, argv, "", long_opts, &opt_index)) != -1) 
@@ -196,6 +218,10 @@ int main(int argc, char *argv[])
             case 4:
                 slotid = atoi(optarg);
                 api_test(slotid);
+                exit(0);
+            case 5:
+                slotid = atoi(optarg);
+                api_set_master(slotid);
                 exit(0);
             default: 
                 exit(0);
