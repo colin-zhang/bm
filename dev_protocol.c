@@ -33,7 +33,7 @@ dev_msg_head(msg_head_t *msg, uint8_t type, uint16_t len)
     msg->type = type;
     msg->slot_id = gp_bif->slot_id;
     msg->slot_type = gp_bif->slot_type;
-    msg->board_type = htons(gp_bif->board_type);
+    msg->board_type = htonl(gp_bif->board_type);
     if (len) msg->len = htons(len);
 }
 

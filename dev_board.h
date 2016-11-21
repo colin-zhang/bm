@@ -33,7 +33,7 @@ typedef struct board_info
     int session_id;
     int slot_id;
     int slot_type; // board_state
-    int board_type;
+    uint32_t board_type;
     long uptime;  
     long uptime_m;  /* uptime of master board */
     char hw_version[32];
