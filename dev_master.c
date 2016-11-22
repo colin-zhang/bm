@@ -159,6 +159,27 @@ reg_board_print(master_info_t *mif)
     }
 }
 
+
+static int 
+master_elect(void *ptr, void *ptr_self)
+{
+
+    master_info_t *mif = (master_info_t *)ptr_self;
+    dev_routine_t *rt = (dev_routine_t *)mif->rt;
+    board_info_t *self_bif = (board_info_t *)(mif->rt->self_info);
+
+    printf("self_bif->slot_type = %d \n", self_bif->slot_type);
+    dev_master_group_select_chief(rt->master_group);
+    dev_sub_timer_modify_timeout(mif->vote_timer, (double)UINT32_MAX);
+
+    printf("chief_index = %d, slotid = %d \n", rt->master_group->chief_index, dev_master_group_chief_slotid(rt->master_group));
+    printf("self_bif->slot_type = %d \n", self_bif->slot_type);
+    printf("master->slot_type = %d \n", rt->master_group->member[rt->master_group->chief_index]->slot_type);
+    fflush(stdout);
+    
+    return 0;
+}
+
 static int 
 probe_master_hander(void *ptr, void *ptr_self)
 {
@@ -195,7 +216,7 @@ master_checker(void *ptr, void *ptr_self)
     if (self_bif->slot_type == DEV_STATE_MASTER) {
         reg_boards_check(mif);
     } else if (self_bif->slot_type == DEV_STATE_TOBE_MASTER) {
-        dev_master_group_select_chief(rt->master_group);
+        dev_sub_timer_modify_timeout(mif->vote_timer, (double)1.0);
     }
     
     dev_master_group_print(rt->master_group);
@@ -204,24 +225,9 @@ master_checker(void *ptr, void *ptr_self)
     return 0;
 }
 
-static int 
-master_elect(void *ptr, void *ptr_self)
-{
 
-    master_info_t *mif = (master_info_t *)ptr_self;
-    dev_routine_t *rt = (dev_routine_t *)mif->rt;
-    board_info_t *self_bif = (board_info_t *)(mif->rt->self_info);
 
-    printf("self_bif->slot_type = %d \n", self_bif->slot_type);
-    dev_master_group_select_chief(rt->master_group);
 
-    printf("chief_index = %d, slotid = %d \n", rt->master_group->chief_index, dev_master_group_chief_slotid(rt->master_group));
-    printf("self_bif->slot_type = %d \n", self_bif->slot_type);
-    printf("master->slot_type = %d \n", rt->master_group->member[rt->master_group->chief_index]->slot_type);
-    fflush(stdout);
-    
-    return 0;
-}
 
 static char rsv_data[1024] = {0};
 
@@ -322,6 +328,10 @@ master_disp_probe_ack(master_info_t *mif, char *msg)
         dev_master_group_select_chief(rt->master_group);
     }
 
+    if (self_bif->slot_type == DEV_STATE_TOBE_MASTER && bif_tmp.slot_type == DEV_STATE_BACKUP) {
+        dev_sub_timer_modify_timeout(mif->vote_timer, 0.5);
+    }
+
     return 0;
 }
 
@@ -376,7 +386,7 @@ dev_master_info_init(void *rt)
     if (mif_ptr->check_timer == NULL) {
         exit(-1);
     }
-    mif_ptr->vote_timer = dev_sub_timer_creat(1.5, 1, master_elect, mif_ptr);
+    mif_ptr->vote_timer = dev_sub_timer_creat(1.5, 0, master_elect, mif_ptr);
     if (mif_ptr->vote_timer == NULL) {
         exit(-1);
     }
