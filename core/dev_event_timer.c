@@ -152,6 +152,9 @@ dev_event_timer_handler(void *ptr)
     dev_heap_t * tm_heap = priv->tm_heap;
     dev_timer_ev_t *tm;
 
+    uint64_t exp;
+    read(fd, &exp, sizeof(exp));
+
     while ((tm = dev_heap_get_top(tm_heap))) 
     {
         get_current_timespec(&priv->ts_curr);
@@ -204,7 +207,7 @@ dev_event_timer_creat(int num, void *data)
         dbg_Print("timerfd_settime\n");
         return NULL;
     }
-    ev_ptr = dev_event_creat(fd, DEV_EVENT_TIMER, EPOLLIN | DEV_EPOLLET, sizeof(priv_data_t));
+    ev_ptr = dev_event_creat(fd, DEV_EVENT_TIMER, EPOLLIN /*| DEV_EPOLLET */, sizeof(priv_data_t));
     if (ev_ptr == NULL) {
         dbg_Print("dev_event_creat\n");
         return NULL;

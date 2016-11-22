@@ -257,7 +257,7 @@ dev_getenv_int(const char *var)
     char *env_ptr = NULL;
     env_ptr = getenv(var);
     if (env_ptr) {
-        return atoi(env_ptr);
+        return strtoul(env_ptr, NULL, 0);;
     } else {
         fprintf(stderr, "%s\n", "can not get env");
     }
@@ -270,7 +270,8 @@ dev_self_board_info_init(board_info_t *bif)
     bif->slot_id = dev_getenv_int("slotid");
     printf("slot_id = %d\n", bif->slot_id);
     bif->session_id = 0;
-    bif->board_type = 0x1234;
+    bif->board_type = dev_getenv_int("boardtype");
+    printf("boardtype = %x\n", bif->board_type);
     bif->slot_type = dev_getenv_int("slottype");;
     printf("slot_type = %d\n", bif->slot_type);
     //bif->uptime = dev_sys_uptime();

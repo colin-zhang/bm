@@ -76,7 +76,7 @@ dev_api_get_board_info(void *priv, const int8_t *data, uint16_t len, int8_t *ack
 
     api_bif->slot_id = (priv_ptr->self_info->slot_id);
     api_bif->slot_type = (priv_ptr->self_info->slot_type);
-    api_bif->board_type = htons(priv_ptr->self_info->board_type);
+    api_bif->board_type = htonl(priv_ptr->self_info->board_type);
     api_bif->uptime = htonl(dev_sys_uptime());
     api_bif->master_slotid = priv_ptr->master_group->chiet_slotid;
     snprintf((char *)api_bif->hw_version, sizeof(api_bif->hw_version), "%s", priv_ptr->self_info->hw_version);

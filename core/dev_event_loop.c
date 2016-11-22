@@ -38,7 +38,7 @@ dev_event_list_destroy(dev_event_list_t *list) {
 
 }
 
-int 
+static inline int 
 dev_event_list_add(dev_event_list_t *list, dev_event_t *event_ptr) 
 {
     if (list == NULL || event_ptr == NULL) {
@@ -58,7 +58,7 @@ dev_event_list_add(dev_event_list_t *list, dev_event_t *event_ptr)
     return 0;
 }
 
-static int 
+static inline int 
 dev_event_list_remove(dev_event_list_t *list, dev_event_t *event_ptr) 
 {
     dev_event_t *ev_ptr = NULL;
@@ -89,7 +89,7 @@ dev_event_list_remove(dev_event_list_t *list, dev_event_t *event_ptr)
     return 1;
 }
 
-static dev_event_t *
+static inline dev_event_t *
 dev_event_list_find_by_fd(dev_event_list_t *list, int fd) 
 {
     dev_event_t *ev_ptr = NULL;

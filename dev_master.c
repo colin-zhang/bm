@@ -238,8 +238,8 @@ master_disp_regester(master_info_t *mif, char *msg, int slotid)
 
     bif_tmp.slot_id = msg_head->slot_id;
     bif_tmp.slot_type = msg_head->slot_type;
-    bif_tmp.board_type = ntohs(msg_head->board_type);
-    bif_tmp.uptime = ntohll(reg->uptime);
+    bif_tmp.board_type = ntohl(msg_head->board_type);
+    bif_tmp.uptime = dev_ntohll(reg->uptime);
     snprintf((char *)bif_tmp.hw_version, sizeof(bif_tmp.hw_version), "%s", reg->hwVersion);
     snprintf((char *)bif_tmp.sw_version, sizeof(bif_tmp.sw_version), "%s", reg->swVersion);
     bif_tmp.timeout_chk = 0;
@@ -275,7 +275,7 @@ master_disp_heartbeat(master_info_t *mif, char *msg, int slotid)
     bif_ptr = reg_boards_search(mif, bif_tmp.slot_id);
     if (bif_ptr != NULL) {
         bif_tmp.slot_type = msg_head->slot_type;
-        bif_tmp.uptime = ntohll(heartbeat->uptime);
+        bif_tmp.uptime = dev_ntohll(heartbeat->uptime);
         bif_tmp.timeout_chk = 0;
         dev_board_info_update_state(bif_ptr, &bif_tmp);
     }
@@ -307,8 +307,8 @@ master_disp_probe_ack(master_info_t *mif, char *msg)
 
     bif_tmp.slot_id = msg_head->slot_id;
     bif_tmp.slot_type = msg_head->slot_type;
-    bif_tmp.board_type = ntohs(msg_head->board_type);
-    bif_tmp.uptime = ntohll(probe_ack->uptime);
+    bif_tmp.board_type = ntohl(msg_head->board_type);
+    bif_tmp.uptime = dev_ntohll(probe_ack->uptime);
     snprintf((char *)bif_tmp.hw_version, sizeof(bif_tmp.hw_version), "%s", probe_ack->hwVersion);
     snprintf((char *)bif_tmp.sw_version, sizeof(bif_tmp.sw_version), "%s", probe_ack->swVersion);
     bif_tmp.timeout_chk = 0;

@@ -2,7 +2,8 @@
 #define _DEV_LIB_H
 
 #include <stdint.h>
-
+//#pragma pack(1)
+//__attribute__((packed))
 /*
 code  
     30 OK
@@ -16,7 +17,7 @@ typedef struct dev_api_msg_head_
     uint8_t   code;      //return code
     uint16_t  data_len;
     int8_t    data[0];
-} __attribute__((packed)) dev_api_msg_head_t;
+} __attribute__((packed))dev_api_msg_head_t;
 
 enum dev_api_cmd_type
 {
@@ -29,7 +30,7 @@ typedef struct dev_api_board_info
 {
     uint8_t slot_id;
     uint8_t slot_type; // board_state
-    uint16_t board_type;
+    uint32_t board_type;
     uint32_t uptime;
     uint8_t  master_slotid;
     int8_t hw_version[32];

@@ -3,13 +3,7 @@
 
 #include <stdint.h>
 
-static inline uint64_t htonll(uint64_t val) { 
-     return  (((uint64_t) htonl(val))  <<   32 )  +  htonl(val  >>   32 ); 
-} 
-
-static inline uint64_t ntohll(uint64_t val) { 
-     return  (((uint64_t) ntohl(val))  <<   32 )  +  ntohl(val  >>   32 ); 
-} 
+#pragma pack(2)
 
 //globle packet head
 typedef struct _msg_head
@@ -18,7 +12,7 @@ typedef struct _msg_head
    uint8_t   type;
    uint8_t   slot_id;
    uint8_t   slot_type;
-   uint16_t  board_type;
+   uint32_t  board_type;
    uint16_t  len;
    int8_t    data[0];
 }msg_head_t;
@@ -75,7 +69,7 @@ typedef struct _msg_heartbeat
     uint64_t  uptime;
 }msg_heartbeat_t;
 
-
+#pragma pack()
 
 int dev_protocol_port(void);
 

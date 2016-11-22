@@ -73,7 +73,7 @@ io_disp_probe(io_info_t *ioif, char *msg, int slotid)
             case DEV_STATE_IO:
                 dev_sent_msg(rt->ofd, slotid, dev_io_register(1));
                 self_bif->slot_type = DEV_STATE_IO_REG_WAIT;
-                ioif->register_timer = dev_sub_timer_creat(5.0, 1, io_register_timerout, ioif);
+                ioif->register_timer = dev_sub_timer_creat(3.0, 1, io_register_timerout, ioif);
                 if (ioif->register_timer == NULL) {
                     exit(-1);
                 }
@@ -90,6 +90,12 @@ io_disp_probe(io_info_t *ioif, char *msg, int slotid)
                 dev_sent_msg(rt->ofd, slotid, dev_heart_beat(1));
                 break;
         }
+    } else if (msg_head->slot_type == DEV_STATE_BACKUP && msg_head->slot_id == ioif->master_slot) {
+        if (self_bif->slot_type != DEV_STATE_IO) {
+            self_bif->slot_type = DEV_STATE_IO;
+            dev_sub_timer_modify_timeout(ioif->master_timeout, (double)UINT32_MAX);
+        }
+        
     }
     return 0;
 }
@@ -147,7 +153,7 @@ dev_io_creat(void *data)
     dev_routine_t *rt = (dev_routine_t *)data;
     io_info_t *ioif;
         
-    ev_ptr = dev_event_creat(rt->ifd, DEV_EVENT_IO, EPOLLIN | DEV_EPOLLET, 0);
+    ev_ptr = dev_event_creat(rt->ifd, DEV_EVENT_IO, EPOLLIN, 0);
     if (ev_ptr == NULL) {
         dbg_Print("ev_ptr, dev_event_creat\n");
         return NULL;
