@@ -12,6 +12,10 @@
 #include "dev_master.h"
 #include "dev_board_api.h"
 
+static master_info_t *MasterInfo;
+static dev_master_group_t *MasterGroup;
+extern board_info_t *SelfBoardInfo;
+
 int 
 reg_board_info_cmp_slot_id(const void *a, const void *b)
 {
@@ -165,16 +169,14 @@ master_elect(void *ptr, void *ptr_self)
 {
 
     master_info_t *mif = (master_info_t *)ptr_self;
-    dev_routine_t *rt = (dev_routine_t *)mif->rt;
-    board_info_t *self_bif = (board_info_t *)(mif->rt->self_info);
 
-    printf("self_bif->slot_type = %d \n", self_bif->slot_type);
-    dev_master_group_select_chief(rt->master_group);
+    printf("SelfBoardInfo->slot_type = %d \n", SelfBoardInfo->slot_type);
+    dev_master_group_select_chief(MasterGroup);
     dev_sub_timer_modify_timeout(mif->vote_timer, (double)UINT32_MAX);
 
-    printf("chief_index = %d, slotid = %d \n", rt->master_group->chief_index, dev_master_group_chief_slotid(rt->master_group));
-    printf("self_bif->slot_type = %d \n", self_bif->slot_type);
-    printf("master->slot_type = %d \n", rt->master_group->member[rt->master_group->chief_index]->slot_type);
+    printf("chief_index = %d, slotid = %d \n", MasterGroup->chief_index, dev_master_group_chief_slotid(MasterGroup));
+    printf("SelfBoardInfo->slot_type = %d \n", SelfBoardInfo->slot_type);
+    printf("master->slot_type = %d \n", MasterGroup->member[MasterGroup->chief_index]->slot_type);
     fflush(stdout);
     
     return 0;
@@ -185,20 +187,19 @@ probe_master_hander(void *ptr, void *ptr_self)
 {
     master_info_t *mif = (master_info_t *)ptr_self;
     dev_routine_t *rt = (dev_routine_t *)mif->rt;
-    board_info_t *self_bif = (board_info_t *)(mif->rt->self_info);
     int i = 0;
     int master_slot = 0;
 
-/*    if (self_bif->slot_type  == DEV_STATE_BACKUP) {
+/*    if (SelfBoardInfo->slot_type  == DEV_STATE_BACKUP) {
         master_slot = dev_master_group_chief_slotid(rt->master_group);
         dev_sent_msg(mif->rt->ofd, master_slot, dev_master_probe(1, 0));
     } else {*/
     for (i = 1; i <= 14; i++) {
-         if (i != self_bif->slot_id) {
+         if (i != SelfBoardInfo->slot_id) {
             dev_sent_msg(mif->rt->ofd, i, dev_master_probe(1, 0));
          }
     }
-    rt->self_info->uptime = dev_sys_uptime();
+    SelfBoardInfo->uptime = dev_sys_uptime();
     return 0;
 }
 
@@ -206,27 +207,22 @@ static int
 master_checker(void *ptr, void *ptr_self)
 {
     master_info_t *mif = (master_info_t *)ptr_self;
-    dev_routine_t *rt = (dev_routine_t *)mif->rt;
-    board_info_t *self_bif = (board_info_t *)(mif->rt->self_info);
 
-    if (dev_master_group_probe_timeout_check(rt->master_group, 1)) {
-        dev_master_group_select_chief(rt->master_group);
+    if (dev_master_group_probe_timeout_check(MasterGroup, 1)) {
+        dev_master_group_select_chief(MasterGroup);
     }
 
-    if (self_bif->slot_type == DEV_STATE_MASTER) {
+    if (SelfBoardInfo->slot_type == DEV_STATE_MASTER) {
         reg_boards_check(mif);
-    } else if (self_bif->slot_type == DEV_STATE_TOBE_MASTER) {
+    } else if (SelfBoardInfo->slot_type == DEV_STATE_TOBE_MASTER) {
         dev_sub_timer_modify_timeout(mif->vote_timer, (double)1.0);
     }
     
-    dev_master_group_print(rt->master_group);
+    dev_master_group_print(MasterGroup);
     reg_board_print(mif);
 
     return 0;
 }
-
-
-
 
 
 static char rsv_data[1024] = {0};
@@ -250,7 +246,6 @@ master_disp_regester(master_info_t *mif, char *msg, int slotid)
     snprintf((char *)bif_tmp.sw_version, sizeof(bif_tmp.sw_version), "%s", reg->swVersion);
     bif_tmp.timeout_chk = 0;
     
-
     bif_ptr = reg_boards_search(mif, bif_tmp.slot_id);
     if (bif_ptr != NULL) {
         dev_board_info_update_state(bif_ptr, &bif_tmp);
@@ -306,7 +301,6 @@ master_disp_probe_ack(master_info_t *mif, char *msg)
     dev_routine_t *rt = (dev_routine_t *)mif->rt;
     msg_head_t *msg_head = (msg_head_t *)msg;
     msg_probe_ack_t *probe_ack = (msg_probe_ack_t *)msg_head->data;
-    board_info_t *self_bif = (board_info_t *)(rt->self_info);
 
     board_info_t bif_tmp;
     int ret = 0;
@@ -319,16 +313,16 @@ master_disp_probe_ack(master_info_t *mif, char *msg)
     snprintf((char *)bif_tmp.sw_version, sizeof(bif_tmp.sw_version), "%s", probe_ack->swVersion);
     bif_tmp.timeout_chk = 0;
     
-    ret = dev_master_group_add(rt->master_group, &bif_tmp);
+    ret = dev_master_group_add(MasterGroup, &bif_tmp);
     if (bif_tmp.slot_type == DEV_STATE_TOBE_MASTER) {
-        dev_master_group_select_chief(rt->master_group);
+        dev_master_group_select_chief(MasterGroup);
     }
 
-    if (self_bif->slot_type == DEV_STATE_MASTER && bif_tmp.slot_type == DEV_STATE_MASTER) {
-        dev_master_group_select_chief(rt->master_group);
+    if (SelfBoardInfo->slot_type == DEV_STATE_MASTER && bif_tmp.slot_type == DEV_STATE_MASTER) {
+        dev_master_group_select_chief(MasterGroup);
     }
 
-    if (self_bif->slot_type == DEV_STATE_TOBE_MASTER && bif_tmp.slot_type == DEV_STATE_BACKUP) {
+    if (SelfBoardInfo->slot_type == DEV_STATE_TOBE_MASTER && bif_tmp.slot_type == DEV_STATE_BACKUP) {
         dev_sub_timer_modify_timeout(mif->vote_timer, 0.5);
     }
 
@@ -367,7 +361,7 @@ master_io_disp(void *ptr)
 }
 
 static master_info_t *
-dev_master_info_init(void *rt)
+dev_master_info_init(dev_routine_t *rt)
 {
     master_info_t * mif_ptr = NULL;
 
@@ -391,9 +385,9 @@ dev_master_info_init(void *rt)
         exit(-1);
     }
 
-    dev_event_timer_add(mif_ptr->rt->timer, mif_ptr->probe_timer);
-    dev_event_timer_add(mif_ptr->rt->timer, mif_ptr->check_timer);
-    dev_event_timer_add(mif_ptr->rt->timer, mif_ptr->vote_timer);
+    dev_event_timer_add(rt->timer, mif_ptr->probe_timer);
+    dev_event_timer_add(rt->timer, mif_ptr->check_timer);
+    dev_event_timer_add(rt->timer, mif_ptr->vote_timer);
     return mif_ptr;
 }
 
@@ -410,7 +404,10 @@ dev_master_creat(void *data)
         return NULL;
     }
 
+    MasterGroup= dev_master_group_creat(MAX_MASTER_NUM); 
+    dev_master_group_add(MasterGroup, SelfBoardInfo);
     mif = dev_master_info_init(rt);
+
     rt->td = mif;
 
     dev_event_set_data(ev_ptr, mif, master_io_disp, NULL);

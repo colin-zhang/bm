@@ -10,7 +10,9 @@
 #include "util/dev_if_so.h"
 #include "util/dev_utils.h"
 
-#define MAX_BOARD_NUM 14
+#define MAX_BOARD_NUM   (14)
+#define MAX_MASTER_NUM  (4)
+
 typedef int slotid_array_t[16];
 
 enum board_state
@@ -38,6 +40,7 @@ typedef struct board_info
     long uptime_m;  /* uptime of master board */
     char hw_version[32];
     char sw_version[32];
+    int  master_slotid;
     int  timeout_chk; // 1 is timeout, it is offline
 }board_info_t;
 
@@ -47,7 +50,6 @@ typedef struct dev_master_group
     int count;
     board_info_t **member;
     int chief_index;
-    int chiet_slotid;
     int update_flag;     // if 1 need fresh
 }dev_master_group_t;
 
@@ -64,13 +66,14 @@ typedef struct dev_routine
     int ifd;
     int ofd;
     dev_event_t *board_api;
-    board_info_t *self_info;
-    dev_master_group_t *master_group;
     void *td;
 }dev_routine_t;
 
 
 board_info_t *dev_board_info_new(void);
+
+dev_master_group_t *dev_master_group_creat(int num);
+int dev_master_group_add(dev_master_group_t *dmg, board_info_t * bif);
 
 void dev_board_info_update_state(board_info_t *to, board_info_t *from);
 

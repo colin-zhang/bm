@@ -11,7 +11,7 @@
 #include "dev_board.h"
 #include "dev_board_api.h"
 
-#define MAX_MASTER_NUM (4)
+board_info_t *SelfBoardInfo;
 
 extern void dev_protocol_init_boardinfo(board_info_t *bif);
 extern int dev_protocol_port(void);
@@ -164,9 +164,9 @@ dev_master_group_select_chief(dev_master_group_t *dmg)
     }
     index = dev_master_group_select(dmg, select_indexs, num);
     dev_master_group_set_chief(dmg, index);
-    dmg->chiet_slotid = dev_master_group_chief_slotid(dmg);
-    printf("index = %d, dmg->count = %d, chief slot_id = [%d]\n", index, dmg->count, dmg->chiet_slotid);
-    return index;
+    SelfBoardInfo->master_slotid = dev_master_group_chief_slotid(dmg);
+/*    printf("index = %d, dmg->count = %d, chief slot_id = [%d]\n", index, dmg->count, dmg->chiet_slotid);
+*/    return index;
 }
 
 int 
@@ -223,31 +223,29 @@ dev_board_rt_init(int *type)
         exit(-1);
     }
     rt->timer = dev_event_timer_creat(20, rt);
-    rt->self_info = dev_board_info_new();
-    rt->master_group = dev_master_group_creat(MAX_MASTER_NUM);    
-
-    dev_self_board_info_init(rt->self_info);
-    dev_protocol_init_boardinfo(rt->self_info);
-
-    rt->ifd = dev_udp_port_creat(rt->self_info->slot_id, dev_protocol_port());
-    rt->ofd = dev_udp_client_creat();
-    rt->board_api = dev_board_api_init(rt);
+    SelfBoardInfo = dev_board_info_new();
     
-    switch (rt->self_info->slot_type) {
+    dev_self_board_info_init(SelfBoardInfo);
+    dev_protocol_init_boardinfo(SelfBoardInfo);
+
+    rt->ifd = dev_udp_port_creat(SelfBoardInfo->slot_id, dev_protocol_port());
+    rt->ofd = dev_udp_client_creat();
+    rt->board_api = dev_board_api_init(SelfBoardInfo);
+    
+    switch (SelfBoardInfo->slot_type) {
         case DEV_STATE_MASTER:
         case DEV_STATE_BACKUP:
         case DEV_STATE_MASTER_EXP:
         case DEV_STATE_TOBE_MASTER:
-            rt->self_info->slot_type = DEV_STATE_BACKUP;
-            dev_master_group_add(rt->master_group, rt->self_info);
+            SelfBoardInfo->slot_type = DEV_STATE_BACKUP;
             break;
         case DEV_STATE_IO:
         case DEV_STATE_IO_REG:
         case DEV_STATE_IO_EXP:
-            rt->self_info->slot_type = DEV_STATE_IO;
+            SelfBoardInfo->slot_type = DEV_STATE_IO;
             break;
     }
-    *type = rt->self_info->slot_type;
+    *type = SelfBoardInfo->slot_type;
     return rt;
 }
 
@@ -268,15 +266,16 @@ static int
 dev_self_board_info_init(board_info_t *bif)
 {
     bif->slot_id = dev_getenv_int("slotid");
-    printf("slot_id = %d\n", bif->slot_id);
     bif->session_id = 0;
     bif->board_type = dev_getenv_int("boardtype");
-    printf("boardtype = %x\n", bif->board_type);
     bif->slot_type = dev_getenv_int("slottype");;
-    printf("slot_type = %d\n", bif->slot_type);
-    //bif->uptime = dev_sys_uptime();
+    bif->uptime = dev_sys_uptime();
     snprintf(bif->sw_version, sizeof(bif->sw_version), "%s", "v123456");
     snprintf(bif->hw_version, sizeof(bif->hw_version), "%s", "hw");
+
+    printf("slot_id = %d\n", bif->slot_id);
+    printf("boardtype = %x\n", bif->board_type);
+    printf("slot_type = %d\n", bif->slot_type);
     return 0;
 }
 
