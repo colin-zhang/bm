@@ -1,8 +1,7 @@
 #ifndef _DEV_MAIN_H
 #define _DEV_MAIN_H
 
-#include "./def/dev_def.h"
-#include "core/dev_event_loop.h"
+#include "def/dev_def.h"
 #include "core/dev_event_timer.h"
 #include "core/dev_event.h"
 #include "core/dev_signalfd.h"

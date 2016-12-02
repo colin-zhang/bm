@@ -1,5 +1,4 @@
 #include "./def/dev_def.h"
-#include "core/dev_event_loop.h"
 #include "core/dev_event.h"
 #include "core/dev_event_timer.h"
 #include "core/dev_signalfd.h"
@@ -141,14 +140,13 @@ dev_board_api_init(void *data)
     board_info_t *board_info_ptr = (board_info_t *)data;
 
     int fd = dev_udp_port_creat(board_info_ptr->slot_id, api_port);
-    ev_ptr = dev_event_creat(fd, DEV_EVENT_IO, EPOLLIN | DEV_EPOLLET, sizeof(api_priv_t));
+    ev_ptr = dev_event_creat(fd, EPOLLIN | EPOLLET, dev_api_io_disp, NULL, sizeof(api_priv_t));
     if (ev_ptr == NULL) {
         dbg_Print("ev_ptr, dev_event_creat\n");
         return NULL;
     }
     priv_ptr = (api_priv_t *)dev_event_get_priv(ev_ptr);
     priv_ptr->self_info = board_info_ptr;
-    dev_event_set_data(ev_ptr, NULL, dev_api_io_disp, NULL);
     dev_api_table_init();
     return ev_ptr;
 }

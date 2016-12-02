@@ -1,5 +1,4 @@
 #include "./def/dev_def.h"
-#include "core/dev_event_loop.h"
 #include "core/dev_event.h"
 #include "core/dev_signalfd.h"
 #include "util/dev_udp.h"
@@ -149,17 +148,19 @@ dev_io_creat(void *data)
     dev_event_t *ev_ptr = NULL;
     dev_routine_t *rt = (dev_routine_t *)data;
     io_info_t *ioif;
-        
-    ev_ptr = dev_event_creat(rt->ifd, DEV_EVENT_IO, EPOLLIN, 0);
-    if (ev_ptr == NULL) {
-        dbg_Print("ev_ptr, dev_event_creat\n");
-        return NULL;
-    }
+
 
     ioif = calloc(1, sizeof(io_info_t));
     if (ioif == NULL) {
         exit(-1);
     }
+        
+    ev_ptr = dev_event_creat(rt->ifd, EPOLLIN, io_io_disp, ioif, 0);
+    if (ev_ptr == NULL) {
+        dbg_Print("ev_ptr, dev_event_creat\n");
+        return NULL;
+    }
+
     ioif->check_timer = dev_sub_timer_creat(2.0, 0, io_checker, ioif);
     if (ioif->check_timer == NULL) {
         exit(-1);
@@ -180,8 +181,6 @@ dev_io_creat(void *data)
 
     rt->td = ioif;
     ioif->rt = rt;
-    
-    dev_event_set_data(ev_ptr, (io_info_t *)ioif, io_io_disp, NULL);
 
     return ev_ptr;
 }

@@ -1,176 +1,64 @@
 #ifndef _DEV_EVENT_h
 #define _DEV_EVENT_h 
-
-#include "stdbool.h"
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <sys/epoll.h>
 
-typedef enum 
-{
-    DEV_EVENT_IO,
-    DEV_EVENT_TIMER,
-    DEV_EVENT_SIG,
-    DEV_EVENT_EVENTFD,
-    DEV_EVENT_FSCHG,
-} dev_event_type_t;
-
 typedef enum {
-    DEV_EPOLLIN    =  EPOLLIN,  /* The associated file is available for read(2) operations */
-    DEV_EPOLLOUT   =  EPOLLOUT, /*The associated file is available for write(2) operations.*/
-    DEV_EPOLLRDHUP =  EPOLLRDHUP,/*(since Linux 2.6.17)Stream socket peer closed connection, 
-                                or shut down writing half of connection.  
-                                (This flag is especially useful for writing  simple  code  to  
-                                detect peer shutdown when using Edge Triggered monitoring.) */
-    DEV_EPOLLPRI   =  EPOLLPRI, /*There is urgent data available for read(2) operations.*/
-    DEV_EPOLLERR   =  EPOLLERR,/*Error condition happened on the associated file descriptor. 
-                              epoll_wait(2) will always wait for this event;
-                               it is not necessary to set it in events.*/
-    DEV_EPOLLHUP   =  EPOLLHUP,/*Hang up happened on the associated file descriptor. 
-                              epoll_wait(2) will always wait for this event; 
-                              it is not necessary to set it in events.*/
+    EVENT_READ = 1,
+    EVENT_WRITE = 2,
+    EVENT_ERR = 3,
+} dev_ev_type_t;
 
-    DEV_EPOLLET    =  EPOLLET,/*Sets the Edge Triggered behavior for the associated file descriptor. 
-                             The default behavior for epoll is Level Triggered. 
-                             See epoll(7) for more detailed information about Edge 
-                             and Level Triggered event distribution architectures.*/
-       
-    DEV_EPOLLONESHOT  =  EPOLLONESHOT,
-} dev_epoll_type_t;
-
+typedef int  (*loop_cb_t)(void *, uint32_t);
 typedef int  (*handler_t)(void *);
-typedef void (*destroy_t)(void *);
 
-struct _dev_event_t 
+typedef struct _dev_event_t 
 {
     int fd;
-    dev_event_type_t type;
-    dev_epoll_type_t ep_type;
-    bool handing;
+    uint32_t  events;
     handler_t handler;
-    destroy_t destroy;
-    struct _dev_event_t *next;
     void *data;
-    void *handle_ptr;
     char priv[0];
-};
+} dev_event_t;
 
-typedef struct _dev_event_t dev_event_t;
+typedef struct _dev_ev_loop
+{
+    int ep_fd;
+    int ev_max;
+    struct epoll_event *ep_events;
+    loop_cb_t cb;
+} dev_event_loop_t;
 
-/*void* dev_event_get_priv(dev_event_t *event_ptr);
-void* dev_event_get_data(dev_event_t *event_ptr);
-int   dev_event_get_fd(dev_event_t *event_ptr);
-dev_event_type_t dev_event_get_type(dev_event_t *event_ptr);
-dev_epoll_type_t dev_event_get_ep_type(dev_event_t *event_ptr);
-dev_event_t* dev_event_get_next(dev_event_t *event_ptr);
-bool dev_event_get_ep_handing(dev_event_t *event_ptr);
-handler_t dev_event_get_handler(dev_event_t *event_ptr, void **handle_ptr, bool *handing);
-void* dev_event_get_handler_ptr(dev_event_t *event_ptr);
-destroy_t dev_event_get_destroy(dev_event_t *event_ptr);*/
+dev_event_loop_t *dev_event_loop_creat(int max_event, loop_cb_t cb);
+static inline void* dev_event_get_priv(dev_event_t *event_ptr)
+{
+    return event_ptr->priv;
+}
+static inline void* dev_event_get_data(dev_event_t *event_ptr)
+{
+    return event_ptr->data;
+}
+static inline int dev_event_get_fd(dev_event_t *event_ptr)
+{
+    return event_ptr->fd;
+}
 
-dev_event_t* dev_event_creat(int fd, dev_event_type_t type, dev_epoll_type_t ep_type, int priv_len);
-/*void dev_event_set_data(dev_event_t *event_ptr, void *data, handler_t handler, destroy_t destroy);
-void dev_event_set_property(dev_event_t *event_ptr, bool handing);
-void dev_event_set_ep_type(dev_event_t *event_ptr, dev_epoll_type_t ep_type);
-void dev_event_set_next(dev_event_t *curr, dev_event_t *next);*/
+int dev_event_loop_run(dev_event_loop_t* loop);
+int dev_event_loop_add(dev_event_loop_t* loop, dev_event_t *event_ptr);
+int dev_event_loop_remove(dev_event_loop_t* loop, dev_event_t *event_ptr);
+
+dev_event_t* dev_event_creat(int fd, uint32_t events, handler_t handler, void *data, int priv_len);
 
 #define DEV_DECL_PRIV(event_ptr, priv) priv_data_t* priv = (priv_data_t*)(dev_event_get_priv(event_ptr))
 #define DEV_DECL_FD(event_ptr, fd)   int fd = (int)(dev_event_get_fd(event_ptr))
 #define DEV_DECL_DATA(event_ptr, type, data)   (type *) data = (type *)(dev_event_get_data(event_ptr))
 
 
-
-static inline void
-dev_event_set_data(dev_event_t *event_ptr, void *data, handler_t handler, destroy_t destroy)
-{
-    event_ptr->data = data;
-    event_ptr->handler = handler;
-    event_ptr->destroy = destroy;
-}
-
-static inline void
-dev_event_set_property(dev_event_t *event_ptr, bool handing)
-{
-    event_ptr->handing = handing;
-}
-
-static inline void
-dev_event_set_ep_type(dev_event_t *event_ptr, dev_epoll_type_t ep_type)
-{
-    event_ptr->ep_type = ep_type;
-}
-
-static inline dev_event_t* 
-dev_event_get_next(dev_event_t *event_ptr)
-{
-    return event_ptr->next;
-}
-
-static inline void*
-dev_event_get_priv(dev_event_t *event_ptr)
-{
-    return event_ptr->priv;
-}
-
-static inline void*
-dev_event_get_data(dev_event_t *event_ptr)
-{
-    return event_ptr->data;
-}
-
-static inline int 
-dev_event_get_fd(dev_event_t *event_ptr)
-{
-    return event_ptr->fd;
-}
-
-static inline dev_event_type_t 
-dev_event_get_type(dev_event_t *event_ptr)
-{
-    return event_ptr->type;
-}
-
-static inline dev_epoll_type_t 
-dev_event_get_ep_type(dev_event_t *event_ptr)
-{
-    return event_ptr->ep_type;
-}
-
-static inline bool 
-dev_event_get_ep_handing(dev_event_t *event_ptr)
-{
-    return event_ptr->handing;
-}
-
-static inline handler_t
-dev_event_get_handler(dev_event_t *event_ptr, void **handle_ptr, bool *handing)
-{
-    if (handle_ptr != NULL) {
-        *handle_ptr = event_ptr->handle_ptr;
-    }
-    if (handing != NULL) {
-        *handing = event_ptr->handing;
-    }
-
-    return event_ptr->handler;
-}
-
-static inline void* 
-dev_event_get_handler_ptr(dev_event_t *event_ptr)
-{
-    return event_ptr->handle_ptr;
-}
-
-static inline destroy_t
-dev_event_get_destroy(dev_event_t *event_ptr)
-{
-    return event_ptr->destroy;
-}
-
-static inline void
-dev_event_set_next(dev_event_t *curr, dev_event_t *next)
-{
-    curr->next = next;
-}
-
+#define Print(fmt, args...) \
+        do { \
+            fprintf(stderr, "DBG:%s(%d)-%s: "fmt"\n", __FILE__, __LINE__, __FUNCTION__, ##args); \
+            fflush(stderr); \
+        } while (0)
 #endif

@@ -1,5 +1,4 @@
 #include "./def/dev_def.h"
-#include "core/dev_event_loop.h"
 #include "core/dev_event.h"
 #include "core/dev_event_timer.h"
 #include "core/dev_signalfd.h"
@@ -397,20 +396,13 @@ dev_master_creat(void *data)
     dev_event_t *ev_ptr;
     dev_routine_t *rt = (dev_routine_t *)data;
     master_info_t *mif;
-        
-    ev_ptr = dev_event_creat(rt->ifd, DEV_EVENT_IO, EPOLLIN/*| DEV_EPOLLET */, 0);
-    if (ev_ptr == NULL) {
-        dbg_Print("ev_ptr, dev_event_creat\n");
-        return NULL;
-    }
 
     MasterGroup= dev_master_group_creat(MAX_MASTER_NUM); 
     dev_master_group_add(MasterGroup, SelfBoardInfo);
     mif = dev_master_info_init(rt);
-
     rt->td = mif;
 
-    dev_event_set_data(ev_ptr, mif, master_io_disp, NULL);
+    ev_ptr = dev_event_creat(rt->ifd, EPOLLIN/*| DEV_EPOLLET */, master_io_disp, mif, 0);
 
     return ev_ptr;
 }

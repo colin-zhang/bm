@@ -1,8 +1,8 @@
-#include "../def/dev_def.h"
 #include "dev_event.h"
 #include "dev_event_timer.h"
 #include "dev_heap.h"
 #include <sys/timerfd.h>
+#include <unistd.h>
 #include <time.h>
 #include <stdio.h>
 #include <string.h>
@@ -82,13 +82,11 @@ dec_timespec_minus(struct timespec *tsb, struct timespec *tss)
 
     ts.tv_sec = 0;
     ts.tv_nsec = ONE_MSECOND;
-
     if (timespec_cmp(tsb, tss) > 0) {
         if (tss->tv_nsec > tsb->tv_nsec) {
             tsb->tv_sec--;
             tsb->tv_nsec += ONE_SECOND;
         }
-
         if (tss->tv_sec > tsb->tv_sec) {
             ts.tv_sec = 0;
             ts.tv_nsec = ONE_MSECOND;
@@ -110,7 +108,6 @@ static inline int
 dev_set_relative_timerfd(int fd, double it_timeout, double interval_timeout)
 {
     struct itimerspec newValue;
-
     memset(&newValue, 0, sizeof(newValue));
     newValue.it_value = get_it_timespec(it_timeout);
     newValue.it_interval = get_it_timespec(interval_timeout);
@@ -137,7 +134,6 @@ dev_event_timer_cmp_l(void *ev1, void *ev2)
     if (ret >= 0) {
         return 0;
     }
-
     return 1;
 }
 
@@ -185,7 +181,6 @@ dev_event_timer_handler(void *ptr)
     if (dev_timerfd_relative_set(fd, &newValue) != 0) {
         return -1;
     }
-
     return 0;
 }
 
@@ -193,35 +188,23 @@ dev_event_t *
 dev_event_timer_creat(int num, void *data)
 {
     dev_event_t *ev_ptr;
-    struct itimerspec newValue;
     int fd;
 
     if ((fd = timerfd_create(CLOCK_MONOTONIC, 0)) < 0) {
-        dbg_Print("timerfd_create\n");
+        Print("timerfd_create\n");
         return NULL;
     }
-
-    set_it_itimerspec(&newValue, 0, 0);
-
-    if (timerfd_settime(fd, 0, &newValue, NULL) != 0) {
-        dbg_Print("timerfd_settime\n");
-        return NULL;
-    }
-    ev_ptr = dev_event_creat(fd, DEV_EVENT_TIMER, EPOLLIN /*| DEV_EPOLLET */, sizeof(priv_data_t));
+    dev_set_relative_timerfd(fd, 0, 0);
+    ev_ptr = dev_event_creat(fd, EPOLLIN /*| DEV_EPOLLET */, dev_event_timer_handler, data, sizeof(priv_data_t));
     if (ev_ptr == NULL) {
-        dbg_Print("dev_event_creat\n");
+        Print("dev_event_creat\n");
         return NULL;
     }
-
     DEV_DECL_PRIV(ev_ptr, priv);
     priv->tm_heap = dev_heap_creat(num, dev_event_timer_cmp_l);
     if (priv->tm_heap == NULL) {
         return NULL;
     }
-
-    dev_set_relative_timerfd(fd, 0, 0);
-    dev_event_set_data(ev_ptr, data, dev_event_timer_handler, NULL);
-
     return ev_ptr;
 }
 

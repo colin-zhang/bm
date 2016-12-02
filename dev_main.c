@@ -1,4 +1,3 @@
-#include "core/dev_event_loop.h"
 #include "core/dev_event.h"
 #include "core/dev_event_timer.h"
 #include "core/dev_signalfd.h"
@@ -53,6 +52,16 @@ devd_tool(int argc, char *argv[])
     return 0;
 }
 
+int 
+ev_loop_cb(void *data, uint32_t events)
+{
+    dev_event_t *ev = (dev_event_t *)data;
+    ev->handler(data);
+    return 0;
+}
+
+dev_event_loop_t *Loop = NULL;
+
 int main(int argc, char *argv[])
 {   
     int res = 0, slottype = 0;
@@ -67,10 +76,7 @@ int main(int argc, char *argv[])
         return devd_tool(argc, argv);
     }
 
-    if (dev_event_deafult_loop_init(10) == NULL) {
-        fprintf(stderr, "Fail to create deafult loop\n");
-        exit(-1);
-    }
+    Loop = dev_event_loop_creat(10, ev_loop_cb);
  
     rt = dev_board_rt_init(&slottype);
     if (rt == NULL) {
@@ -91,10 +97,10 @@ int main(int argc, char *argv[])
         fprintf(stderr, "%s\n", "ev_srv is NULL");
         exit(-1);
     }
-    //dev_event_loop_add(dev_event_deafult_loop(), dev_defualt_signalfd(NULL));
-    dev_event_loop_add(dev_event_deafult_loop(), rt->timer);
-    dev_event_loop_add(dev_event_deafult_loop(), rt->board_api);
-    dev_event_loop_add(dev_event_deafult_loop(), ev_srv);
-    dev_event_loop_run(dev_event_deafult_loop());
+    //dev_event_loop_add(Loop, dev_defualt_signalfd(NULL));
+    dev_event_loop_add(Loop, rt->timer);
+    dev_event_loop_add(Loop, rt->board_api);
+    dev_event_loop_add(Loop, ev_srv);
+    dev_event_loop_run(Loop);
     return 0;
 }

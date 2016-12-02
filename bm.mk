@@ -9,9 +9,7 @@ MK_DIR ?= $(PWD)
 PRJ_SRC = 	\
 	core/dev_heap.c \
 	core/dev_event.c \
-	core/dev_event_loop.c \
 	core/dev_event_timer.c \
-	core/dev_signalfd.c \
 	util/dev_common.c \
 	util/dev_ipc.c \
 	util/dev_udp.c \
