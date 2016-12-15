@@ -81,7 +81,7 @@ dev_master_group_search_by_slot(dev_master_group_t *dmg, int slot_id)
     return -1;
 }
 
-/* DEV_STATE_TOBE_MASTER */
+/* DEV_TYPE_TOBE_MASTER */
 static int 
 dev_master_group_search_by_slottype(dev_master_group_t *dmg, int type, int *them)
 {
@@ -99,10 +99,10 @@ dev_master_group_set_chief(dev_master_group_t *dmg, int index)
 {
     int i = 0;
     for (i = 0; i < dmg->count; i++) {
-        dmg->member[i]->slot_type = DEV_STATE_BACKUP;
+        dmg->member[i]->slot_type = DEV_TYPE_BACKUP;
     }
     if (index >=0 && index < dmg->count) {
-        dmg->member[index]->slot_type = DEV_STATE_MASTER;
+        dmg->member[index]->slot_type = DEV_TYPE_MASTER;
         dmg->chief_index = index;
         dmg->update_flag = 0;
     }
@@ -154,11 +154,11 @@ dev_master_group_select_chief(dev_master_group_t *dmg)
     int num = 0;
     int select_indexs[MAX_MASTER_NUM] = {0};
 
-    num = dev_master_group_search_by_slottype(dmg, DEV_STATE_TOBE_MASTER, select_indexs);
+    num = dev_master_group_search_by_slottype(dmg, DEV_TYPE_TOBE_MASTER, select_indexs);
     if (num == 0) {
-        num = dev_master_group_search_by_slottype(dmg, DEV_STATE_MASTER, select_indexs); 
+        num = dev_master_group_search_by_slottype(dmg, DEV_TYPE_MASTER, select_indexs); 
         if (num == 0) {
-            num = dev_master_group_search_by_slottype(dmg, DEV_STATE_BACKUP, select_indexs);
+            num = dev_master_group_search_by_slottype(dmg, DEV_TYPE_BACKUP, select_indexs);
         }
     }
     index = dev_master_group_select(dmg, select_indexs, num);
@@ -174,7 +174,7 @@ dev_master_group_probe_timeout_check(dev_master_group_t *dmg, int from)
     int i = 0;
     for (i = from; i < dmg->count; i++) {
         if (dmg->member[i]->timeout_chk) {
-            dmg->member[i]->slot_type = DEV_STATE_MASTER_OFFLINE;
+            dmg->member[i]->slot_type = DEV_TYPE_MASTER_OFFLINE;
             return 1;
         } else {
             dmg->member[i]->timeout_chk = 1;
@@ -198,7 +198,7 @@ dev_master_group_add(dev_master_group_t *dmg, board_info_t * bif)
         return -1;
     }
 
-    if (dmg->count == 0 && bif->slot_type == DEV_STATE_BACKUP) {
+    if (dmg->count == 0 && bif->slot_type == DEV_TYPE_BACKUP) {
         dmg->member[0] = bif;
     } else {
         board_info_t *ptr = dev_board_info_new();
@@ -232,16 +232,16 @@ dev_board_rt_init(int *type)
     rt->board_api = dev_board_api_init(SelfBoardInfo);
     
     switch (SelfBoardInfo->slot_type) {
-        case DEV_STATE_MASTER:
-        case DEV_STATE_BACKUP:
-        case DEV_STATE_MASTER_EXP:
-        case DEV_STATE_TOBE_MASTER:
-            SelfBoardInfo->slot_type = DEV_STATE_BACKUP;
+        case DEV_TYPE_MASTER:
+        case DEV_TYPE_BACKUP:
+        case DEV_TYPE_MASTER_EXP:
+        case DEV_TYPE_TOBE_MASTER:
+            SelfBoardInfo->slot_type = DEV_TYPE_BACKUP;
             break;
-        case DEV_STATE_IO:
-        case DEV_STATE_IO_REG:
-        case DEV_STATE_IO_EXP:
-            SelfBoardInfo->slot_type = DEV_STATE_IO;
+        case DEV_TYPE_IO:
+        case DEV_TYPE_IO_REG:
+        case DEV_TYPE_IO_EXP:
+            SelfBoardInfo->slot_type = DEV_TYPE_IO;
             break;
     }
     *type = SelfBoardInfo->slot_type;

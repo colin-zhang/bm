@@ -14,19 +14,19 @@
 
 typedef int slotid_array_t[16];
 
-enum board_state
+enum board_type
 {
-    DEV_SATE_INIT = 0,
-    DEV_STATE_MASTER,
-    DEV_STATE_BACKUP,
-    DEV_STATE_IO,
-    DEV_STATE_IO_REG,
-    DEV_SATE_IO_OFFLINE,
-    DEV_STATE_MASTER_OFFLINE,
-    DEV_STATE_IO_EXP,
-    DEV_STATE_MASTER_EXP,
-    DEV_STATE_IO_REG_WAIT,
-    DEV_STATE_TOBE_MASTER,
+    DEV_TYPE_INIT = 0,
+    DEV_TYPE_MASTER,
+    DEV_TYPE_BACKUP,
+    DEV_TYPE_IO,
+    DEV_TYPE_IO_REG,
+    DEV_TYPE_IO_OFFLINE,
+    DEV_TYPE_MASTER_OFFLINE,
+    DEV_TYPE_IO_EXP,
+    DEV_TYPE_MASTER_EXP,
+    DEV_TYPE_IO_REG_WAIT,
+    DEV_TYPE_TOBE_MASTER,
 };
 
 typedef struct board_info

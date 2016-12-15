@@ -58,7 +58,7 @@ dev_api_set_master(void *priv, const int8_t *data, uint16_t len, int8_t *ack_buf
     api_priv_t *priv_ptr = (api_priv_t *)priv;
     *ack_len = 0;
 
-    priv_ptr->self_info->slot_type = DEV_STATE_TOBE_MASTER;
+    priv_ptr->self_info->slot_type = DEV_TYPE_TOBE_MASTER;
     return 0;
 }
 

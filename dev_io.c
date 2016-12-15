@@ -38,8 +38,8 @@ io_register_timerout(void *ptr, void *ptr_self)
 {
     io_info_t *ioif = (io_info_t *)ptr_self;
 
-    if (SelfBoardInfo->slot_type == DEV_STATE_IO_REG_WAIT) {
-        SelfBoardInfo->slot_type = DEV_STATE_IO;
+    if (SelfBoardInfo->slot_type == DEV_TYPE_IO_REG_WAIT) {
+        SelfBoardInfo->slot_type = DEV_TYPE_IO;
     }
     printf("%s\n", "io_register_timerout");
     return 0;
@@ -51,8 +51,8 @@ dev_io_master_timeout(void *ptr, void *ptr_self)
     io_info_t *ioif = (io_info_t *)ptr_self;
     dev_routine_t *rt = (dev_routine_t *)ioif->rt;
       
-    if (SelfBoardInfo->slot_type != DEV_STATE_IO) {
-        SelfBoardInfo->slot_type = DEV_STATE_IO;
+    if (SelfBoardInfo->slot_type != DEV_TYPE_IO) {
+        SelfBoardInfo->slot_type = DEV_TYPE_IO;
     }
     dev_sub_timer_modify_timeout(ioif->master_timeout, (double)UINT32_MAX);
     return 0;
@@ -65,18 +65,18 @@ io_disp_probe(io_info_t *ioif, char *msg, int slotid)
     msg_head_t *msg_head = (msg_head_t *)msg;
     msg_probe_t *probe = (msg_probe_t *)msg_head->data;
 
-    if (msg_head->slot_type == DEV_STATE_MASTER) {
+    if (msg_head->slot_type == DEV_TYPE_MASTER) {
         switch (SelfBoardInfo->slot_type) {
-            case DEV_STATE_IO:
+            case DEV_TYPE_IO:
                 dev_sent_msg(rt->ofd, slotid, dev_io_register(1));
-                SelfBoardInfo->slot_type = DEV_STATE_IO_REG_WAIT;
+                SelfBoardInfo->slot_type = DEV_TYPE_IO_REG_WAIT;
                 ioif->register_timer = dev_sub_timer_creat(3.0, 1, io_register_timerout, ioif);
                 if (ioif->register_timer == NULL) {
                     exit(-1);
                 }
                 dev_event_timer_add(rt->timer, ioif->register_timer);
                 break;
-            case DEV_STATE_IO_REG: 
+            case DEV_TYPE_IO_REG: 
                 if (slotid == ioif->master_slot) {
                     ioif->state_conter++;
                     dev_sub_timer_modify_timeout(ioif->master_timeout, 2.0);
@@ -87,9 +87,9 @@ io_disp_probe(io_info_t *ioif, char *msg, int slotid)
                 dev_sent_msg(rt->ofd, slotid, dev_heart_beat(1));
                 break;
         }
-    } else if (msg_head->slot_type == DEV_STATE_BACKUP && msg_head->slot_id == ioif->master_slot) {
-        if (SelfBoardInfo->slot_type != DEV_STATE_IO) {
-            SelfBoardInfo->slot_type = DEV_STATE_IO;
+    } else if (msg_head->slot_type == DEV_TYPE_BACKUP && msg_head->slot_id == ioif->master_slot) {
+        if (SelfBoardInfo->slot_type != DEV_TYPE_IO) {
+            SelfBoardInfo->slot_type = DEV_TYPE_IO;
             dev_sub_timer_modify_timeout(ioif->master_timeout, (double)UINT32_MAX);
         }
         
@@ -104,8 +104,8 @@ io_disp_register_ack(io_info_t *ioif, char *msg, int slotid)
     msg_head_t *msg_head = (msg_head_t *)msg;
     msg_probe_t *probe = (msg_probe_t *)msg_head->data;
 
-    if (msg_head->slot_type == DEV_STATE_MASTER) {
-        if (SelfBoardInfo->slot_type == DEV_STATE_IO_REG_WAIT) {
+    if (msg_head->slot_type == DEV_TYPE_MASTER) {
+        if (SelfBoardInfo->slot_type == DEV_TYPE_IO_REG_WAIT) {
             ioif->master_slot = slotid;
             SelfBoardInfo->master_slotid = slotid;
             SelfBoardInfo->slot_type = DEV_REGISTER;

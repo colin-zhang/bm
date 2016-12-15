@@ -85,10 +85,10 @@ int main(int argc, char *argv[])
     }
 
     switch(slottype) {
-        case DEV_STATE_IO:
+        case DEV_TYPE_IO:
             ev_srv = dev_io_creat(rt);
             break;
-        case DEV_STATE_BACKUP:
+        case DEV_TYPE_BACKUP:
             ev_srv = dev_master_creat(rt);
             break;
     }

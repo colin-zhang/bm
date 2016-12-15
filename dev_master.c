@@ -133,7 +133,7 @@ reg_boards_check(master_info_t *mif)
     int i = 0;
     for (i = 0; i < mif->reg_board_num; i++) {
         if (mif->boards[i]->timeout_chk) {
-            mif->boards[i]->slot_type = DEV_SATE_IO_OFFLINE;
+            mif->boards[i]->slot_type = DEV_TYPE_IO_OFFLINE;
             return 1;
         } else {
             mif->boards[i]->timeout_chk = 1;
@@ -189,7 +189,7 @@ probe_master_hander(void *ptr, void *ptr_self)
     int i = 0;
     int master_slot = 0;
 
-/*    if (SelfBoardInfo->slot_type  == DEV_STATE_BACKUP) {
+/*    if (SelfBoardInfo->slot_type  == DEV_TYPE_BACKUP) {
         master_slot = dev_master_group_chief_slotid(rt->master_group);
         dev_sent_msg(mif->rt->ofd, master_slot, dev_master_probe(1, 0));
     } else {*/
@@ -211,9 +211,9 @@ master_checker(void *ptr, void *ptr_self)
         dev_master_group_select_chief(MasterGroup);
     }
 
-    if (SelfBoardInfo->slot_type == DEV_STATE_MASTER) {
+    if (SelfBoardInfo->slot_type == DEV_TYPE_MASTER) {
         reg_boards_check(mif);
-    } else if (SelfBoardInfo->slot_type == DEV_STATE_TOBE_MASTER) {
+    } else if (SelfBoardInfo->slot_type == DEV_TYPE_TOBE_MASTER) {
         dev_sub_timer_modify_timeout(mif->vote_timer, (double)1.0);
     }
     
@@ -313,15 +313,15 @@ master_disp_probe_ack(master_info_t *mif, char *msg)
     bif_tmp.timeout_chk = 0;
     
     ret = dev_master_group_add(MasterGroup, &bif_tmp);
-    if (bif_tmp.slot_type == DEV_STATE_TOBE_MASTER) {
+    if (bif_tmp.slot_type == DEV_TYPE_TOBE_MASTER) {
         dev_master_group_select_chief(MasterGroup);
     }
 
-    if (SelfBoardInfo->slot_type == DEV_STATE_MASTER && bif_tmp.slot_type == DEV_STATE_MASTER) {
+    if (SelfBoardInfo->slot_type == DEV_TYPE_MASTER && bif_tmp.slot_type == DEV_TYPE_MASTER) {
         dev_master_group_select_chief(MasterGroup);
     }
 
-    if (SelfBoardInfo->slot_type == DEV_STATE_TOBE_MASTER && bif_tmp.slot_type == DEV_STATE_BACKUP) {
+    if (SelfBoardInfo->slot_type == DEV_TYPE_TOBE_MASTER && bif_tmp.slot_type == DEV_TYPE_BACKUP) {
         dev_sub_timer_modify_timeout(mif->vote_timer, 0.5);
     }
 

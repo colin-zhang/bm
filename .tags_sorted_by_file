@@ -1,0 +1,438 @@
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+MK_DIR	bm.mk	/^MK_DIR ?= $(PWD)$/;"	m
+PRJ_CFLAG	bm.mk	/^PRJ_CFLAG = -D UWARE_DEFAULT_IP_DOMAIN=\\"192.168.11.0\\" $/;"	m
+PRJ_DEBUG	bm.mk	/^PRJ_DEBUG = no$/;"	m
+PRJ_LDFLAG	bm.mk	/^PRJ_LDFLAG = -lrt $/;"	m
+PRJ_SRC	bm.mk	/^PRJ_SRC = 	\\$/;"	m
+PRJ_TARGET	bm.mk	/^PRJ_TARGET = bmd$/;"	m
+PRJ_TARGET_TYPE	bm.mk	/^PRJ_TARGET_TYPE = exe$/;"	m
+dev_event_creat	core/dev_event.c	/^dev_event_creat(int fd, uint32_t events, handler_t handler, void *data, int priv_len)$/;"	f
+dev_event_loop_add	core/dev_event.c	/^dev_event_loop_add(dev_event_loop_t* loop, dev_event_t *event)$/;"	f
+dev_event_loop_creat	core/dev_event.c	/^dev_event_loop_creat(int max_event, loop_cb_t cb) $/;"	f
+dev_event_loop_pause	core/dev_event.c	/^dev_event_loop_pause(dev_event_loop_t* loop, dev_event_t *event)$/;"	f
+dev_event_loop_remove	core/dev_event.c	/^dev_event_loop_remove(dev_event_loop_t* loop, dev_event_t *event)$/;"	f
+dev_event_loop_run	core/dev_event.c	/^dev_event_loop_run(dev_event_loop_t* loop) $/;"	f
+DEV_DECL_DATA	core/dev_event.h	56;"	d
+DEV_DECL_FD	core/dev_event.h	55;"	d
+DEV_DECL_PRIV	core/dev_event.h	54;"	d
+EVENT_ERR	core/dev_event.h	/^    EVENT_ERR = 3,$/;"	e	enum:__anon2
+EVENT_READ	core/dev_event.h	/^    EVENT_READ = 1,$/;"	e	enum:__anon2
+EVENT_WRITE	core/dev_event.h	/^    EVENT_WRITE = 2,$/;"	e	enum:__anon2
+Print	core/dev_event.h	59;"	d
+_DEV_EVENT_h	core/dev_event.h	2;"	d
+_dev_ev_loop	core/dev_event.h	/^typedef struct _dev_ev_loop$/;"	s
+_dev_event_t	core/dev_event.h	/^typedef struct _dev_event_t $/;"	s
+cb	core/dev_event.h	/^    loop_cb_t cb;$/;"	m	struct:_dev_ev_loop
+data	core/dev_event.h	/^    void *data;$/;"	m	struct:_dev_event_t
+dev_ev_type_t	core/dev_event.h	/^} dev_ev_type_t;$/;"	t	typeref:enum:__anon2
+dev_event_get_data	core/dev_event.h	/^static inline void* dev_event_get_data(dev_event_t *event_ptr)$/;"	f
+dev_event_get_fd	core/dev_event.h	/^static inline int dev_event_get_fd(dev_event_t *event_ptr)$/;"	f
+dev_event_get_priv	core/dev_event.h	/^static inline void* dev_event_get_priv(dev_event_t *event_ptr)$/;"	f
+dev_event_loop_t	core/dev_event.h	/^} dev_event_loop_t;$/;"	t	typeref:struct:_dev_ev_loop
+dev_event_t	core/dev_event.h	/^} dev_event_t;$/;"	t	typeref:struct:_dev_event_t
+ep_events	core/dev_event.h	/^    struct epoll_event *ep_events;$/;"	m	struct:_dev_ev_loop	typeref:struct:_dev_ev_loop::epoll_event
+ep_fd	core/dev_event.h	/^    int ep_fd;$/;"	m	struct:_dev_ev_loop
+ev_max	core/dev_event.h	/^    int ev_max;$/;"	m	struct:_dev_ev_loop
+events	core/dev_event.h	/^    uint32_t  events;$/;"	m	struct:_dev_event_t
+fd	core/dev_event.h	/^    int fd;$/;"	m	struct:_dev_event_t
+handler	core/dev_event.h	/^    handler_t handler;$/;"	m	struct:_dev_event_t
+handler_t	core/dev_event.h	/^typedef int  (*handler_t)(void *);$/;"	t
+loop_cb_t	core/dev_event.h	/^typedef int  (*loop_cb_t)(void *, uint32_t);$/;"	t
+priv	core/dev_event.h	/^    char priv[0];$/;"	m	struct:_dev_event_t
+ONE_MSECOND	core/dev_event_timer.c	12;"	d	file:
+ONE_SECOND	core/dev_event_timer.c	11;"	d	file:
+ONE_VSECOND	core/dev_event_timer.c	13;"	d	file:
+_priv_date_t	core/dev_event_timer.c	/^typedef struct _priv_date_t$/;"	s	file:
+dec_timespec_minus	core/dev_event_timer.c	/^dec_timespec_minus(struct timespec *tsb, struct timespec *tss) $/;"	f	file:
+dev_event_timer_add	core/dev_event_timer.c	/^dev_event_timer_add(dev_event_t *ev, dev_timer_ev_t *tm)$/;"	f
+dev_event_timer_cmp_l	core/dev_event_timer.c	/^dev_event_timer_cmp_l(void *ev1, void *ev2)$/;"	f	file:
+dev_event_timer_creat	core/dev_event_timer.c	/^dev_event_timer_creat(int num, void *data)$/;"	f
+dev_event_timer_handler	core/dev_event_timer.c	/^dev_event_timer_handler(void *ptr)$/;"	f	file:
+dev_set_relative_timerfd	core/dev_event_timer.c	/^dev_set_relative_timerfd(int fd, double it_timeout, double interval_timeout)$/;"	f	file:
+dev_sub_timer_creat	core/dev_event_timer.c	/^dev_sub_timer_creat(double timeout, char repeat, timer_handler_t handler, void * data)$/;"	f
+dev_sub_timer_modify_timeout	core/dev_event_timer.c	/^dev_sub_timer_modify_timeout(dev_timer_ev_t *tm, double timeout)$/;"	f
+dev_sub_timer_remove	core/dev_event_timer.c	/^dev_sub_timer_remove(dev_timer_ev_t * sub_timer)$/;"	f
+dev_timerfd_relative_set	core/dev_event_timer.c	/^dev_timerfd_relative_set(int fd, struct itimerspec *newValue)$/;"	f	file:
+get_current_timespec	core/dev_event_timer.c	/^get_current_timespec(struct timespec *curr)$/;"	f	file:
+get_it_timespec	core/dev_event_timer.c	/^get_it_timespec(double timeout) $/;"	f	file:
+get_it_timespec_timeout	core/dev_event_timer.c	/^get_it_timespec_timeout(double timeout) $/;"	f	file:
+priv_data_t	core/dev_event_timer.c	/^} priv_data_t;$/;"	t	typeref:struct:_priv_date_t	file:
+set_it_itimerspec	core/dev_event_timer.c	/^set_it_itimerspec(struct itimerspec *spec, double it_timeout, double interval_timeout) $/;"	f	file:
+timespec_cmp	core/dev_event_timer.c	/^timespec_cmp(struct timespec *ts1, struct timespec *ts2)$/;"	f	file:
+tm_heap	core/dev_event_timer.c	/^    dev_heap_t *tm_heap;$/;"	m	struct:_priv_date_t	file:
+ts_curr	core/dev_event_timer.c	/^    struct timespec ts_curr;$/;"	m	struct:_priv_date_t	typeref:struct:_priv_date_t::timespec	file:
+_DEV_EVENT_TIMER_H	core/dev_event_timer.h	2;"	d
+_dev_timer_ev_t	core/dev_event_timer.h	/^typedef struct _dev_timer_ev_t $/;"	s
+cb	core/dev_event_timer.h	/^    timer_handler_t cb; $/;"	m	struct:_dev_timer_ev_t
+dev_timer_ev_t	core/dev_event_timer.h	/^} dev_timer_ev_t;$/;"	t	typeref:struct:_dev_timer_ev_t
+ptr	core/dev_event_timer.h	/^    void * ptr;$/;"	m	struct:_dev_timer_ev_t
+repeat	core/dev_event_timer.h	/^    int16_t repeat;        $/;"	m	struct:_dev_timer_ev_t
+timeout	core/dev_event_timer.h	/^    double timeout;$/;"	m	struct:_dev_timer_ev_t
+timer_handler_t	core/dev_event_timer.h	/^typedef int  (*timer_handler_t)(void *ev_data, void *self_data);$/;"	t
+ts	core/dev_event_timer.h	/^    struct timespec ts;$/;"	m	struct:_dev_timer_ev_t	typeref:struct:_dev_timer_ev_t::timespec
+HEAP_LCHLD	core/dev_heap.c	6;"	d	file:
+HEAP_PARNT	core/dev_heap.c	8;"	d	file:
+HEAP_RCHLD	core/dev_heap.c	7;"	d	file:
+HEAP_SIZE	core/dev_heap.c	9;"	d	file:
+dev_heap_add	core/dev_heap.c	/^dev_heap_add(dev_heap_t *heap, void *data)$/;"	f
+dev_heap_creat	core/dev_heap.c	/^dev_heap_creat(int size, dev_heap_cmp_t cmp)$/;"	f
+dev_heap_destory	core/dev_heap.c	/^dev_heap_destory(dev_heap_t *heap)$/;"	f
+dev_heap_get_top	core/dev_heap.c	/^dev_heap_get_top(dev_heap_t *heap)$/;"	f
+dev_heap_pop	core/dev_heap.c	/^dev_heap_pop(dev_heap_t *heap)$/;"	f
+dev_heap_trickle_up	core/dev_heap.c	/^dev_heap_trickle_up(dev_heap_t *heap, int index)$/;"	f	file:
+dev_heap_tricle_down	core/dev_heap.c	/^dev_heap_tricle_down(dev_heap_t *heap, int index)$/;"	f	file:
+_DEV_HEAP_H	core/dev_heap.h	2;"	d
+_dev_heap	core/dev_heap.h	/^typedef struct _dev_heap$/;"	s
+array	core/dev_heap.h	/^    void **array;$/;"	m	struct:_dev_heap
+array_size	core/dev_heap.h	/^    int  array_size;$/;"	m	struct:_dev_heap
+cmp	core/dev_heap.h	/^    dev_heap_cmp_t cmp;$/;"	m	struct:_dev_heap
+dev_heap_cmp_t	core/dev_heap.h	/^typedef int  (*dev_heap_cmp_t)(void *, void *);$/;"	t
+dev_heap_t	core/dev_heap.h	/^} dev_heap_t;$/;"	t	typeref:struct:_dev_heap
+dev_heap_upd_t	core/dev_heap.h	/^typedef void (*dev_heap_upd_t) (void *elem);$/;"	t
+size	core/dev_heap.h	/^    int  size;$/;"	m	struct:_dev_heap
+update	core/dev_heap.h	/^    dev_heap_upd_t update;$/;"	m	struct:_dev_heap
+dev_defualt_signalfd	core/dev_signalfd.c	/^dev_defualt_signalfd(void *data)$/;"	f
+dev_signalfd_handler	core/dev_signalfd.c	/^dev_signalfd_handler(void *ptr)$/;"	f	file:
+_DEV_SIGNALFD_H	core/dev_signalfd.h	2;"	d
+_DEV_EVNET_DEF_H	def/dev_def.h	2;"	d
+container_of	def/dev_def.h	23;"	d
+dbg_Print	def/dev_def.h	28;"	d
+dev_print_dbg	def/dev_def.h	34;"	d
+likely	def/dev_def.h	37;"	d
+likely	def/dev_def.h	40;"	d
+offsetof	def/dev_def.h	21;"	d
+offsetof	def/dev_def.h	22;"	d
+unlikely	def/dev_def.h	38;"	d
+unlikely	def/dev_def.h	41;"	d
+SelfBoardInfo	dev_board.c	/^board_info_t *SelfBoardInfo;$/;"	v
+dev_board_info_new	dev_board.c	/^dev_board_info_new(void)$/;"	f
+dev_board_info_update_state	dev_board.c	/^dev_board_info_update_state(board_info_t *to, board_info_t *from) $/;"	f
+dev_board_rt_init	dev_board.c	/^dev_board_rt_init(int *type)$/;"	f
+dev_getenv_int	dev_board.c	/^dev_getenv_int(const char *var)$/;"	f
+dev_master_group_add	dev_board.c	/^dev_master_group_add(dev_master_group_t *dmg, board_info_t * bif)$/;"	f
+dev_master_group_chief_slotid	dev_board.c	/^dev_master_group_chief_slotid(dev_master_group_t *dmg)$/;"	f
+dev_master_group_creat	dev_board.c	/^dev_master_group_creat(int num)$/;"	f
+dev_master_group_print	dev_board.c	/^dev_master_group_print(dev_master_group_t *dmg)$/;"	f
+dev_master_group_probe_timeout_check	dev_board.c	/^dev_master_group_probe_timeout_check(dev_master_group_t *dmg, int from)$/;"	f
+dev_master_group_search_by_slot	dev_board.c	/^dev_master_group_search_by_slot(dev_master_group_t *dmg, int slot_id)$/;"	f	file:
+dev_master_group_search_by_slottype	dev_board.c	/^dev_master_group_search_by_slottype(dev_master_group_t *dmg, int type, int *them)$/;"	f	file:
+dev_master_group_select	dev_board.c	/^dev_master_group_select(dev_master_group_t *dmg, int *them, int num)$/;"	f	file:
+dev_master_group_select_chief	dev_board.c	/^dev_master_group_select_chief(dev_master_group_t *dmg)$/;"	f
+dev_master_group_set_chief	dev_board.c	/^dev_master_group_set_chief(dev_master_group_t *dmg, int index)$/;"	f	file:
+dev_muc	dev_board.c	/^static inline int dev_muc(long a, long b)$/;"	f	file:
+dev_self_board_info_init	dev_board.c	/^dev_self_board_info_init(board_info_t *bif)$/;"	f	file:
+DEV_SATE_INIT	dev_board.h	/^    DEV_SATE_INIT = 0,$/;"	e	enum:board_state
+DEV_SATE_IO_OFFLINE	dev_board.h	/^    DEV_SATE_IO_OFFLINE,$/;"	e	enum:board_state
+DEV_STATE_BACKUP	dev_board.h	/^    DEV_STATE_BACKUP,$/;"	e	enum:board_state
+DEV_STATE_IO	dev_board.h	/^    DEV_STATE_IO,$/;"	e	enum:board_state
+DEV_STATE_IO_EXP	dev_board.h	/^    DEV_STATE_IO_EXP,$/;"	e	enum:board_state
+DEV_STATE_IO_REG	dev_board.h	/^    DEV_STATE_IO_REG,$/;"	e	enum:board_state
+DEV_STATE_IO_REG_WAIT	dev_board.h	/^    DEV_STATE_IO_REG_WAIT,$/;"	e	enum:board_state
+DEV_STATE_MASTER	dev_board.h	/^    DEV_STATE_MASTER,$/;"	e	enum:board_state
+DEV_STATE_MASTER_EXP	dev_board.h	/^    DEV_STATE_MASTER_EXP,$/;"	e	enum:board_state
+DEV_STATE_MASTER_OFFLINE	dev_board.h	/^    DEV_STATE_MASTER_OFFLINE,$/;"	e	enum:board_state
+DEV_STATE_TOBE_MASTER	dev_board.h	/^    DEV_STATE_TOBE_MASTER,$/;"	e	enum:board_state
+MAX_BOARD_NUM	dev_board.h	12;"	d
+MAX_MASTER_NUM	dev_board.h	13;"	d
+_DEV_MAIN_H	dev_board.h	2;"	d
+board_api	dev_board.h	/^    dev_event_t *board_api;$/;"	m	struct:dev_routine
+board_info	dev_board.h	/^typedef struct board_info$/;"	s
+board_info_t	dev_board.h	/^}board_info_t;$/;"	t	typeref:struct:board_info
+board_state	dev_board.h	/^enum board_state$/;"	g
+board_type	dev_board.h	/^    uint32_t board_type;$/;"	m	struct:board_info
+chief_index	dev_board.h	/^    int chief_index;$/;"	m	struct:dev_master_group
+count	dev_board.h	/^    int count;$/;"	m	struct:dev_master_group
+count	dev_board.h	/^    int count;$/;"	m	struct:dev_pkg_counter
+dev_master_group	dev_board.h	/^typedef struct dev_master_group$/;"	s
+dev_master_group_t	dev_board.h	/^}dev_master_group_t;$/;"	t	typeref:struct:dev_master_group
+dev_pkg_counter	dev_board.h	/^typedef struct dev_pkg_counter$/;"	s
+dev_pkg_counter_t	dev_board.h	/^}dev_pkg_counter_t;$/;"	t	typeref:struct:dev_pkg_counter
+dev_routine	dev_board.h	/^typedef struct dev_routine $/;"	s
+dev_routine_t	dev_board.h	/^}dev_routine_t;$/;"	t	typeref:struct:dev_routine
+hw_version	dev_board.h	/^    char hw_version[32];$/;"	m	struct:board_info
+ifd	dev_board.h	/^    int ifd;$/;"	m	struct:dev_routine
+master_slotid	dev_board.h	/^    int  master_slotid;$/;"	m	struct:board_info
+max_size	dev_board.h	/^    int max_size;$/;"	m	struct:dev_master_group
+member	dev_board.h	/^    board_info_t **member;$/;"	m	struct:dev_master_group
+ofd	dev_board.h	/^    int ofd;$/;"	m	struct:dev_routine
+session_id	dev_board.h	/^    int session_id;$/;"	m	struct:board_info
+slot_id	dev_board.h	/^    int slot_id;$/;"	m	struct:board_info
+slot_id	dev_board.h	/^    int slot_id;$/;"	m	struct:dev_pkg_counter
+slot_type	dev_board.h	/^    int slot_type; \/\/ board_state$/;"	m	struct:board_info
+slotid_array_t	dev_board.h	/^typedef int slotid_array_t[16];$/;"	t
+sw_version	dev_board.h	/^    char sw_version[32];$/;"	m	struct:board_info
+td	dev_board.h	/^    void *td;$/;"	m	struct:dev_routine
+timeout_chk	dev_board.h	/^    int  timeout_chk; \/\/ 1 is timeout, it is offline$/;"	m	struct:board_info
+timer	dev_board.h	/^    dev_event_t *timer;$/;"	m	struct:dev_routine
+type	dev_board.h	/^    int type;$/;"	m	struct:dev_pkg_counter
+update_flag	dev_board.h	/^    int update_flag;     \/\/ if 1 need fresh$/;"	m	struct:dev_master_group
+uptime	dev_board.h	/^    long uptime;  $/;"	m	struct:board_info
+uptime_m	dev_board.h	/^    long uptime_m;  \/* uptime of master board *\/$/;"	m	struct:board_info
+DECL_API_PRIV	dev_board_api.c	20;"	d	file:
+_priv_date_t	dev_board_api.c	/^typedef struct _priv_date_t$/;"	s	file:
+api_msg_head	dev_board_api.c	/^api_msg_head(dev_api_msg_head_t *msg, uint8_t cmd, uint16_t len)$/;"	f	file:
+api_msg_head_error	dev_board_api.c	/^api_msg_head_error(dev_api_msg_head_t *msg, uint8_t cmd, uint8_t code, const char *err_msg)$/;"	f	file:
+api_port	dev_board_api.c	/^static const uint16_t api_port = 8889;$/;"	v	file:
+api_priv_t	dev_board_api.c	/^} api_priv_t;$/;"	t	typeref:struct:_priv_date_t	file:
+dev_api_disp	dev_board_api.c	/^dev_api_disp(void *api_priv, dev_api_msg_head_t *msg_head, int8_t *ack_buf, uint32_t *ack_len)$/;"	f	file:
+dev_api_disp_t	dev_board_api.c	/^typedef int (*dev_api_disp_t)(void *priv, const int8_t*, uint16_t, int8_t*, uint32_t*);$/;"	t	file:
+dev_api_disp_table	dev_board_api.c	/^static dev_api_disp_t dev_api_disp_table[256] = {NULL, };$/;"	v	file:
+dev_api_get_board_info	dev_board_api.c	/^dev_api_get_board_info(void *priv, const int8_t *data, uint16_t len, int8_t *ack_buf, uint32_t *ack_len)$/;"	f	file:
+dev_api_io_disp	dev_board_api.c	/^dev_api_io_disp(void *ptr)$/;"	f	file:
+dev_api_reboot	dev_board_api.c	/^dev_api_reboot(void *priv, const int8_t *data, uint16_t len, int8_t *ack_buf, uint32_t *ack_len)$/;"	f	file:
+dev_api_set_master	dev_board_api.c	/^dev_api_set_master(void *priv, const int8_t *data, uint16_t len, int8_t *ack_buf, uint32_t *ack_len)$/;"	f	file:
+dev_api_table_init	dev_board_api.c	/^dev_api_table_init()$/;"	f	file:
+dev_board_api_init	dev_board_api.c	/^dev_board_api_init(void *data)$/;"	f
+self_info	dev_board_api.c	/^    board_info_t *self_info;$/;"	m	struct:_priv_date_t	file:
+_DEV_BOARD_API_H_	dev_board_api.h	2;"	d
+check_timer	dev_io.c	/^    dev_timer_ev_t *check_timer;$/;"	m	struct:io_info	file:
+dev_io_creat	dev_io.c	/^dev_io_creat(void *data)$/;"	f
+dev_io_master_timeout	dev_io.c	/^dev_io_master_timeout(void *ptr, void *ptr_self)$/;"	f	file:
+io_checker	dev_io.c	/^io_checker(void *ptr, void *ptr_self)$/;"	f	file:
+io_disp_probe	dev_io.c	/^io_disp_probe(io_info_t *ioif, char *msg, int slotid)$/;"	f	file:
+io_disp_register_ack	dev_io.c	/^io_disp_register_ack(io_info_t *ioif, char *msg, int slotid)$/;"	f	file:
+io_info	dev_io.c	/^typedef struct io_info$/;"	s	file:
+io_info_t	dev_io.c	/^}io_info_t;$/;"	t	typeref:struct:io_info	file:
+io_io_disp	dev_io.c	/^io_io_disp(void *ptr)$/;"	f	file:
+io_register_timerout	dev_io.c	/^io_register_timerout(void *ptr, void *ptr_self)$/;"	f	file:
+master_slot	dev_io.c	/^    int master_slot;$/;"	m	struct:io_info	file:
+master_timeout	dev_io.c	/^    dev_timer_ev_t *master_timeout;$/;"	m	struct:io_info	file:
+register_timer	dev_io.c	/^    dev_timer_ev_t *register_timer;$/;"	m	struct:io_info	file:
+rev_buff	dev_io.c	/^    char *rev_buff;$/;"	m	struct:io_info	file:
+rev_buff_len	dev_io.c	/^    int rev_buff_len;$/;"	m	struct:io_info	file:
+rt	dev_io.c	/^    dev_routine_t *rt;$/;"	m	struct:io_info	file:
+state_conter	dev_io.c	/^    long state_conter;$/;"	m	struct:io_info	file:
+_DEV_SLAVE_H	dev_io.h	2;"	d
+DEV_CMD_GET_BOARD_INFO	dev_lib.h	/^    DEV_CMD_GET_BOARD_INFO,$/;"	e	enum:dev_api_cmd_type
+DEV_CMD_REBOOT	dev_lib.h	/^    DEV_CMD_REBOOT = 1,$/;"	e	enum:dev_api_cmd_type
+DEV_CMD_SET_MASTER	dev_lib.h	/^    DEV_CMD_SET_MASTER,$/;"	e	enum:dev_api_cmd_type
+_DEV_LIB_H	dev_lib.h	2;"	d
+board_info	dev_lib.h	/^        dev_api_board_info_t board_info;$/;"	m	union:dev_api_msg::__anon3
+board_type	dev_lib.h	/^    uint32_t board_type;$/;"	m	struct:dev_api_board_info
+cmd	dev_lib.h	/^    uint8_t   cmd;$/;"	m	struct:dev_api_msg_head_
+code	dev_lib.h	/^    uint8_t   code;      \/\/return code$/;"	m	struct:dev_api_msg_head_
+data	dev_lib.h	/^    int8_t    data[0];$/;"	m	struct:dev_api_msg_head_
+data_len	dev_lib.h	/^    uint16_t  data_len;$/;"	m	struct:dev_api_msg_head_
+dev_api_board_info	dev_lib.h	/^typedef struct dev_api_board_info$/;"	s
+dev_api_board_info_t	dev_lib.h	/^} __attribute__((packed))dev_api_board_info_t;$/;"	t	typeref:struct:dev_api_board_info
+dev_api_cmd_type	dev_lib.h	/^enum dev_api_cmd_type$/;"	g
+dev_api_msg	dev_lib.h	/^typedef struct dev_api_msg$/;"	s
+dev_api_msg_head_	dev_lib.h	/^typedef struct dev_api_msg_head_$/;"	s
+dev_api_msg_head_t	dev_lib.h	/^} __attribute__((packed))dev_api_msg_head_t;$/;"	t	typeref:struct:dev_api_msg_head_
+dev_api_msg_t	dev_lib.h	/^} __attribute__((packed))dev_api_msg_t;$/;"	t	typeref:struct:dev_api_msg
+error_msg	dev_lib.h	/^        char error_msg[32];$/;"	m	union:dev_api_msg::__anon3
+header	dev_lib.h	/^    dev_api_msg_head_t  header;$/;"	m	struct:dev_api_msg
+hw_version	dev_lib.h	/^    int8_t hw_version[32];$/;"	m	struct:dev_api_board_info
+master_slotid	dev_lib.h	/^    uint8_t  master_slotid;$/;"	m	struct:dev_api_board_info
+slot_id	dev_lib.h	/^    uint8_t slot_id;$/;"	m	struct:dev_api_board_info
+slot_type	dev_lib.h	/^    uint8_t slot_type; \/\/ board_state$/;"	m	struct:dev_api_board_info
+sw_version	dev_lib.h	/^    int8_t sw_version[32];$/;"	m	struct:dev_api_board_info
+uptime	dev_lib.h	/^    uint32_t uptime;$/;"	m	struct:dev_api_board_info
+ver	dev_lib.h	/^    uint8_t   ver;$/;"	m	struct:dev_api_msg_head_
+Loop	dev_main.c	/^dev_event_loop_t *Loop = NULL;$/;"	v
+backtrace_print	dev_main.c	/^void backtrace_print(int sig_num)$/;"	f
+devd_tool	dev_main.c	/^devd_tool(int argc, char *argv[])$/;"	f	file:
+ev_loop_cb	dev_main.c	/^ev_loop_cb(void *data, uint32_t events)$/;"	f
+main	dev_main.c	/^int main(int argc, char *argv[])$/;"	f
+siginit	dev_main.c	/^void siginit(void) $/;"	f
+MasterGroup	dev_master.c	/^static dev_master_group_t *MasterGroup;$/;"	v	file:
+MasterInfo	dev_master.c	/^static master_info_t *MasterInfo;$/;"	v	file:
+dev_master_creat	dev_master.c	/^dev_master_creat(void *data)$/;"	f
+dev_master_info_init	dev_master.c	/^dev_master_info_init(dev_routine_t *rt)$/;"	f	file:
+master_checker	dev_master.c	/^master_checker(void *ptr, void *ptr_self)$/;"	f	file:
+master_disp_heartbeat	dev_master.c	/^master_disp_heartbeat(master_info_t *mif, char *msg, int slotid)$/;"	f	file:
+master_disp_probe	dev_master.c	/^master_disp_probe(master_info_t *mif, char *msg, int slotid)$/;"	f	file:
+master_disp_probe_ack	dev_master.c	/^master_disp_probe_ack(master_info_t *mif, char *msg)$/;"	f	file:
+master_disp_regester	dev_master.c	/^master_disp_regester(master_info_t *mif, char *msg, int slotid)$/;"	f	file:
+master_elect	dev_master.c	/^master_elect(void *ptr, void *ptr_self)$/;"	f	file:
+master_io_disp	dev_master.c	/^master_io_disp(void *ptr)$/;"	f	file:
+probe_master_hander	dev_master.c	/^probe_master_hander(void *ptr, void *ptr_self)$/;"	f	file:
+reg_board_info_cmp_slot_id	dev_master.c	/^reg_board_info_cmp_slot_id(const void *a, const void *b)$/;"	f
+reg_board_print	dev_master.c	/^reg_board_print(master_info_t *mif)$/;"	f
+reg_boards_add	dev_master.c	/^reg_boards_add(master_info_t *mif, board_info_t *bif)$/;"	f
+reg_boards_adjust	dev_master.c	/^reg_boards_adjust(master_info_t *mif, int index)$/;"	f
+reg_boards_bsearch	dev_master.c	/^reg_boards_bsearch(master_info_t *mif, int slot_id) $/;"	f
+reg_boards_check	dev_master.c	/^reg_boards_check(master_info_t *mif)$/;"	f
+reg_boards_del	dev_master.c	/^reg_boards_del(master_info_t *mif, int slot_id)$/;"	f
+reg_boards_search	dev_master.c	/^reg_boards_search(master_info_t *mif, int slot_id)$/;"	f
+reg_boards_sort_by_slotid	dev_master.c	/^reg_boards_sort_by_slotid(master_info_t *mif)$/;"	f
+reg_boards_update	dev_master.c	/^reg_boards_update(master_info_t *mif, board_info_t *bif)$/;"	f
+rsv_data	dev_master.c	/^static char rsv_data[1024] = {0};$/;"	v	file:
+_DEV_MASTER_H	dev_master.h	2;"	d
+boards	dev_master.h	/^    board_info_t **boards;$/;"	m	struct:master_info
+check_timer	dev_master.h	/^    dev_timer_ev_t *check_timer;$/;"	m	struct:master_info
+master_info	dev_master.h	/^struct master_info$/;"	s
+master_info_t	dev_master.h	/^typedef struct master_info master_info_t;$/;"	t	typeref:struct:master_info
+max_board_num	dev_master.h	/^    int max_board_num;$/;"	m	struct:master_info
+probe_timer	dev_master.h	/^    dev_timer_ev_t *probe_timer;$/;"	m	struct:master_info
+reg_board_num	dev_master.h	/^    int reg_board_num;$/;"	m	struct:master_info
+rt	dev_master.h	/^    dev_routine_t *rt;$/;"	m	struct:master_info
+vote_timer	dev_master.h	/^    dev_timer_ev_t *vote_timer;$/;"	m	struct:master_info
+MSG_HEAD_LEN	dev_protocol.c	15;"	d	file:
+dev_heart_beat	dev_protocol.c	/^dev_heart_beat(int seq)$/;"	f
+dev_io_register	dev_protocol.c	/^dev_io_register(int seq)$/;"	f
+dev_master_probe	dev_protocol.c	/^dev_master_probe(int seq, int flag)$/;"	f
+dev_master_probe_ack	dev_protocol.c	/^dev_master_probe_ack(int seq)$/;"	f
+dev_msg_head	dev_protocol.c	/^dev_msg_head(msg_head_t *msg, uint8_t type, uint16_t len)$/;"	f	file:
+dev_protocol_init_boardinfo	dev_protocol.c	/^dev_protocol_init_boardinfo(board_info_t *bif)$/;"	f
+dev_protocol_port	dev_protocol.c	/^dev_protocol_port(void) $/;"	f
+dev_protocol_version	dev_protocol.c	/^static const int dev_protocol_version = 0x02;$/;"	v	file:
+dev_register_ack	dev_protocol.c	/^dev_register_ack(int seq)$/;"	f
+dev_sent_msg	dev_protocol.c	/^dev_sent_msg(int fd, int slotid, int msg_len)$/;"	f
+dev_set_master	dev_protocol.c	/^dev_set_master(void)$/;"	f
+gp_bif	dev_protocol.c	/^static board_info_t *gp_bif = NULL;$/;"	v	file:
+portNum	dev_protocol.c	/^static const int portNum = 8888;$/;"	v	file:
+protocol_buf	dev_protocol.c	/^static char protocol_buf[2048] = {0};$/;"	v	file:
+DEV_CMD_MAX	dev_protocol.h	/^    DEV_CMD_MAX$/;"	e	enum:protocol_type
+DEV_HEARTBEAT	dev_protocol.h	/^    DEV_HEARTBEAT,$/;"	e	enum:protocol_type
+DEV_REGISTER	dev_protocol.h	/^    DEV_REGISTER,$/;"	e	enum:protocol_type
+DEV_REGISTER_ACK	dev_protocol.h	/^    DEV_REGISTER_ACK,$/;"	e	enum:protocol_type
+DEV_RPROBE	dev_protocol.h	/^    DEV_RPROBE = 1,$/;"	e	enum:protocol_type
+DEV_RPROBE_ACK	dev_protocol.h	/^    DEV_RPROBE_ACK,$/;"	e	enum:protocol_type
+DEV_SET_MASTER	dev_protocol.h	/^    DEV_SET_MASTER,$/;"	e	enum:protocol_type
+_DEV_PROTOCOL_H	dev_protocol.h	2;"	d
+_msg_head	dev_protocol.h	/^typedef struct _msg_head$/;"	s
+_msg_heartbeat	dev_protocol.h	/^typedef struct _msg_heartbeat$/;"	s
+_msg_probe	dev_protocol.h	/^typedef struct _msg_probe$/;"	s
+_msg_probe_ack	dev_protocol.h	/^typedef struct _msg_probe_ack$/;"	s
+_msg_register	dev_protocol.h	/^typedef struct _msg_register$/;"	s
+_msg_register_ack	dev_protocol.h	/^typedef struct _msg_register_ack$/;"	s
+board_type	dev_protocol.h	/^   uint32_t  board_type;$/;"	m	struct:_msg_head
+data	dev_protocol.h	/^   int8_t    data[0];$/;"	m	struct:_msg_head
+flag	dev_protocol.h	/^    uint32_t  flag;$/;"	m	struct:_msg_probe
+hwVersion	dev_protocol.h	/^    uint8_t   hwVersion[32];$/;"	m	struct:_msg_probe_ack
+hwVersion	dev_protocol.h	/^    uint8_t   hwVersion[32];$/;"	m	struct:_msg_register
+len	dev_protocol.h	/^   uint16_t  len;$/;"	m	struct:_msg_head
+msg_head_t	dev_protocol.h	/^}msg_head_t;$/;"	t	typeref:struct:_msg_head
+msg_heartbeat_t	dev_protocol.h	/^}msg_heartbeat_t;$/;"	t	typeref:struct:_msg_heartbeat
+msg_probe_ack_t	dev_protocol.h	/^}msg_probe_ack_t;$/;"	t	typeref:struct:_msg_probe_ack
+msg_probe_t	dev_protocol.h	/^}msg_probe_t;$/;"	t	typeref:struct:_msg_probe
+msg_register_ack_t	dev_protocol.h	/^}msg_register_ack_t;$/;"	t	typeref:struct:_msg_register_ack
+msg_register_t	dev_protocol.h	/^}msg_register_t;$/;"	t	typeref:struct:_msg_register
+protocol_type	dev_protocol.h	/^enum protocol_type$/;"	g
+seq	dev_protocol.h	/^    uint32_t  seq;$/;"	m	struct:_msg_heartbeat
+seq	dev_protocol.h	/^    uint32_t  seq;$/;"	m	struct:_msg_probe
+seq	dev_protocol.h	/^    uint32_t  seq;$/;"	m	struct:_msg_probe_ack
+seq	dev_protocol.h	/^    uint32_t  seq;$/;"	m	struct:_msg_register
+seq	dev_protocol.h	/^    uint32_t  seq;$/;"	m	struct:_msg_register_ack
+sessionID	dev_protocol.h	/^    uint32_t  sessionID;$/;"	m	struct:_msg_register_ack
+slot_id	dev_protocol.h	/^   uint8_t   slot_id;$/;"	m	struct:_msg_head
+slot_type	dev_protocol.h	/^   uint8_t   slot_type;$/;"	m	struct:_msg_head
+swVersion	dev_protocol.h	/^    uint8_t   swVersion[32];$/;"	m	struct:_msg_probe_ack
+swVersion	dev_protocol.h	/^    uint8_t   swVersion[32];$/;"	m	struct:_msg_register
+type	dev_protocol.h	/^   uint8_t   type;$/;"	m	struct:_msg_head
+uptime	dev_protocol.h	/^    uint64_t  uptime;$/;"	m	struct:_msg_heartbeat
+uptime	dev_protocol.h	/^    uint64_t  uptime;$/;"	m	struct:_msg_probe
+uptime	dev_protocol.h	/^    uint64_t  uptime;$/;"	m	struct:_msg_probe_ack
+uptime	dev_protocol.h	/^    uint64_t  uptime;$/;"	m	struct:_msg_register
+version	dev_protocol.h	/^   uint8_t   version;$/;"	m	struct:_msg_head
+api_boardinfo	dev_tool.c	/^api_boardinfo(int slotid)$/;"	f	file:
+api_cmd_receive	dev_tool.c	/^api_cmd_receive(int fd, dev_api_msg_t *msg)$/;"	f	file:
+api_cmd_sent	dev_tool.c	/^api_cmd_sent(int slotid, uint8_t cmd, int *fd)$/;"	f	file:
+api_msg_head	dev_tool.c	/^api_msg_head(dev_api_msg_head_t *msg, uint8_t type, uint16_t len)$/;"	f	file:
+api_reboot	dev_tool.c	/^api_reboot(int slotid) $/;"	f	file:
+api_set_master	dev_tool.c	/^api_set_master(int slotid) $/;"	f	file:
+api_test	dev_tool.c	/^api_test(int slotid) $/;"	f	file:
+io_buff_len	dev_tool.c	/^io_buff_len(int fd)$/;"	f
+io_poll	dev_tool.c	/^io_poll(int fd, int timeout_ms) $/;"	f	file:
+main	dev_tool.c	/^int main(int argc, char *argv[])$/;"	f
+nonblocking	dev_tool.c	/^nonblocking(int fd) $/;"	f	file:
+portNum	dev_tool.c	/^static uint16_t portNum = 8889;$/;"	v	file:
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+AR	main.mk	/^AR = $(CROSS_COMPILE)ar$/;"	m
+BUILD_DIR	main.mk	/^BUILD_DIR     ?= $(PWD)$/;"	m
+CC	main.mk	/^CC = $(CROSS_COMPILE)gcc$/;"	m
+CROSS_COMPILE	main.mk	/^CROSS_COMPILE ?= $/;"	m
+INSTALL_DIR	main.mk	/^INSTALL_DIR   ?= $(PWD)$/;"	m
+OBJS	main.mk	/^OBJS = $(patsubst $(notdir %.c), $(BUILD_DIR)\/%.o, $(PRJ_SRC))$/;"	m
+PWD	main.mk	/^PWD= $(shell pwd)$/;"	m
+SRC_DIR	main.mk	/^SRC_DIR       ?= $(PWD)$/;"	m
+TARGET	main.mk	/^TARGET = $(INSTALL_DIR)\/${PRJ_TARGET}$/;"	m
+SRC_DIR	makefile	/^SRC_DIR?=.$/;"	m
+MK_DIR	tool.mk	/^MK_DIR ?= $(PWD)$/;"	m
+PRJ_CFLAG	tool.mk	/^PRJ_CFLAG =  $/;"	m
+PRJ_DEBUG	tool.mk	/^PRJ_DEBUG = yes$/;"	m
+PRJ_LDFLAG	tool.mk	/^PRJ_LDFLAG = $/;"	m
+PRJ_SRC	tool.mk	/^PRJ_SRC = 	\\$/;"	m
+PRJ_TARGET	tool.mk	/^PRJ_TARGET = bm_tool$/;"	m
+PRJ_TARGET_TYPE	tool.mk	/^PRJ_TARGET_TYPE = exe$/;"	m
+dev_delete_file	util/dev_common.c	/^dev_delete_file(const char *path)$/;"	f
+dev_file_exist	util/dev_common.c	/^dev_file_exist(const char *file_path)$/;"	f
+dev_file_mmap	util/dev_common.c	/^dev_file_mmap(const char *path , int size)$/;"	f
+dev_get_file_path	util/dev_common.c	/^dev_get_file_path(const char *path, const char *file_name,  char *file_path)$/;"	f
+dev_get_file_size	util/dev_common.c	/^dev_get_file_size(const char *path)$/;"	f
+dev_is_dir	util/dev_common.c	/^dev_is_dir(const char *path)$/;"	f
+dev_is_fifo	util/dev_common.c	/^dev_is_fifo(const char *file)$/;"	f
+dev_is_file	util/dev_common.c	/^dev_is_file(const char *path)$/;"	f
+dev_is_special_dir	util/dev_common.c	/^dev_is_special_dir(const char *path)$/;"	f
+dev_make_dir	util/dev_common.c	/^dev_make_dir(const char* dir, mode_t mode)$/;"	f
+readn	util/dev_common.c	/^readn(int fd, void *vptr, size_t n)$/;"	f
+writen	util/dev_common.c	/^writen(int fd, const void *vptr, size_t n)$/;"	f
+_DEV_COMMON_H	util/dev_common.h	2;"	d
+UWARE_DEFAULT_IP_	util/dev_if_so.c	17;"	d	file:
+base_ip	util/dev_if_so.c	/^static char base_ip[32] = {"192.168.168.0"};$/;"	v	file:
+base_port	util/dev_if_so.c	/^static unsigned short base_port = 0;$/;"	v	file:
+dev_afinet_ntop	util/dev_if_so.c	/^dev_afinet_ntop(char *ip, int ip_len, struct sockaddr_in *addr)$/;"	f
+dev_afinet_pton	util/dev_if_so.c	/^dev_afinet_pton(char *ip, struct sockaddr_in *addr)$/;"	f
+dev_get_addr_by_id	util/dev_if_so.c	/^dev_get_addr_by_id(int slot_id, struct sockaddr_in *addr)$/;"	f
+dev_get_id_by_addr	util/dev_if_so.c	/^dev_get_id_by_addr(struct sockaddr_in *addr, int *slot_id)$/;"	f
+dev_get_io_buff_len	util/dev_if_so.c	/^dev_get_io_buff_len(int fd, int *buff_len)$/;"	f
+dev_get_port	util/dev_if_so.c	/^dev_get_port(unsigned short port)$/;"	f
+dev_set_base_ip	util/dev_if_so.c	/^dev_set_base_ip(const char* bip)$/;"	f
+dev_set_nonblocking	util/dev_if_so.c	/^dev_set_nonblocking(int fd, bool if_noblock) $/;"	f
+dev_socket_set_broad_cast	util/dev_if_so.c	/^dev_socket_set_broad_cast(int socket_fd, bool bcst)$/;"	f
+dev_sockst_set_reuse	util/dev_if_so.c	/^dev_sockst_set_reuse(int socket_fd, bool rs)$/;"	f
+_DEV_IF_SO_H	util/dev_if_so.h	2;"	d
+DEV_IPC_FILE_DIR	util/dev_ipc.c	6;"	d	file:
+dev_open_fifo	util/dev_ipc.c	/^int dev_open_fifo(int ipc_chn, int flag)$/;"	f
+dev_read_fd_time_out	util/dev_ipc.c	/^int dev_read_fd_time_out(int fd, char *data_buf, int len, int timeout_ms) $/;"	f
+dev_read_fifo	util/dev_ipc.c	/^int dev_read_fifo(int rd_fd, char *data_buf, int len){$/;"	f
+dev_unix_socket_bind	util/dev_ipc.c	/^dev_unix_socket_bind(int ipc_chn)$/;"	f
+dev_unix_socket_open	util/dev_ipc.c	/^dev_unix_socket_open(int ipc_chn)$/;"	f
+dev_unix_socket_receive	util/dev_ipc.c	/^dev_unix_socket_receive(int sockfd, char *msg, int len)  $/;"	f
+dev_unix_socket_send	util/dev_ipc.c	/^dev_unix_socket_send(int sockfd, int ipc_chn, char *msg, int msg_len)$/;"	f
+dev_write_fifo	util/dev_ipc.c	/^int dev_write_fifo(int wt_fd, void *data_buf,int data_len)$/;"	f
+log_mut	util/dev_log.c	/^static pthread_mutex_t log_mut = PTHREAD_MUTEX_INITIALIZER;$/;"	v	file:
+log_printf	util/dev_log.c	/^log_printf(const char *format, ...)$/;"	f
+DEBUG_PRINT	util/dev_log.h	16;"	d
+DEBUG_PRINT	util/dev_log.h	9;"	d
+LOG_DEBUG	util/dev_log.h	6;"	d
+__DEVD_DEV_LOG_H__	util/dev_log.h	2;"	d
+dev_check_pid	util/dev_pid.c	/^dev_check_pid(const char *daemon_name) $/;"	f
+dev_daemon_init	util/dev_pid.c	/^dev_daemon_init(const char *daemon_name)$/;"	f
+dev_find_proc_pid	util/dev_pid.c	/^dev_find_proc_pid(const char *proc_name)$/;"	f
+dev_pid_output	util/dev_pid.c	/^dev_pid_output(const char *daemon_name) $/;"	f	file:
+_DEV_UTILS_PID_H	util/dev_pid.h	2;"	d
+dev_udp_client_creat	util/dev_udp.c	/^dev_udp_client_creat(void)$/;"	f
+dev_udp_client_creat_con	util/dev_udp.c	/^dev_udp_client_creat_con(int server_id, unsigned short server_port)$/;"	f
+dev_udp_port_creat	util/dev_udp.c	/^dev_udp_port_creat(int id, unsigned short port) $/;"	f
+dev_udp_receive	util/dev_udp.c	/^dev_udp_receive(int sockfd, char *rsv, int rsv_len, struct sockaddr_in *peer_addr)$/;"	f
+dev_udp_receive_con	util/dev_udp.c	/^dev_udp_receive_con(int sockfd, char *rsv, int rsv_len)$/;"	f
+dev_udp_rev_from_id	util/dev_udp.c	/^dev_udp_rev_from_id(int sockfd, char *rsv, int rsv_len, int *slot)$/;"	f
+dev_udp_send	util/dev_udp.c	/^dev_udp_send(int sockfd, char *msg, int msg_len, struct sockaddr_in *peer_addr)$/;"	f
+dev_udp_send_con	util/dev_udp.c	/^dev_udp_send_con(int sockfd, char *msg, int msg_len)$/;"	f
+dev_udp_send_to_id	util/dev_udp.c	/^dev_udp_send_to_id(int sockfd, int id, unsigned short port, char *msg, int msg_len)$/;"	f
+if_broad	util/dev_udp.c	/^static int if_broad = 0;$/;"	v	file:
+_DEV_UDP_H	util/dev_udp.h	2;"	d
+CHECK_ENDIAN	util/dev_utils.c	43;"	d	file:
+DEV_ONE_MSECOND	util/dev_utils.c	15;"	d	file:
+DEV_ONE_SECOND	util/dev_utils.c	14;"	d	file:
+DEV_ONE_VSECOND	util/dev_utils.c	16;"	d	file:
+SwapDWord	util/dev_utils.c	/^uint64_t SwapDWord(uint64_t a)$/;"	f
+SwapShort	util/dev_utils.c	/^uint32_t SwapShort(uint16_t a)$/;"	f
+SwapWord	util/dev_utils.c	/^uint32_t SwapWord(uint32_t a)$/;"	f
+a	util/dev_utils.c	/^    uint8_t a[4];$/;"	m	union:__anon1	file:
+check_endian	util/dev_utils.c	/^} check_endian = {{'L', '?', '?', 'B'}};$/;"	v	typeref:union:__anon1	file:
+dev_htonll	util/dev_utils.c	/^uint64_t dev_htonll(uint64_t a)$/;"	f
+dev_ntohll	util/dev_utils.c	/^uint64_t dev_ntohll(uint64_t a)$/;"	f
+dev_sys_uptime	util/dev_utils.c	/^dev_sys_uptime(void)$/;"	f
+dev_timespec_add	util/dev_utils.c	/^dev_timespec_add(struct timespec *ts1, struct timespec *ts2) $/;"	f
+dev_timespec_cmp	util/dev_utils.c	/^dev_timespec_cmp(struct timespec *ts1, struct timespec *ts2)$/;"	f
+dev_timespec_minus	util/dev_utils.c	/^dev_timespec_minus(struct timespec *ts1, struct timespec *ts2) $/;"	f
+get_timespec_sec	util/dev_utils.c	/^get_timespec_sec(void)$/;"	f
+ul	util/dev_utils.c	/^    uint32_t ul;$/;"	m	union:__anon1	file:
+_DEV_UTILS_H	util/dev_utils.h	2;"	d
