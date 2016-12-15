@@ -186,6 +186,26 @@ api_set_master(int slotid)
     return 0;
 }
 
+static int 
+api_set_backup(int slotid) 
+{
+    int fd, ret;
+    dev_api_msg_t msg;
+
+    ret = api_cmd_sent(slotid, DEV_CMD_SET_BACKUP, &fd);
+    if (ret < 0) {
+        close(fd);
+        return -1;
+    }
+    ret = api_cmd_receive(fd, &msg);
+    if (ret < 0) {
+        close(fd);
+        return -1;
+    }
+    close(fd);
+    return 0;
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -200,6 +220,7 @@ int main(int argc, char *argv[])
         {"info", required_argument, 0, 3},
         {"test", required_argument, 0, 4},
         {"setmaster", required_argument, 0, 5},
+        {"setbackup", required_argument, 0, 6},
     };
 
     while ((opt = getopt_long(argc, argv, "", long_opts, &opt_index)) != -1) 
@@ -222,6 +243,10 @@ int main(int argc, char *argv[])
             case 5:
                 slotid = atoi(optarg);
                 api_set_master(slotid);
+                exit(0);
+            case 6:
+                slotid = atoi(optarg);
+                api_set_backup(slotid);
                 exit(0);
             default: 
                 exit(0);

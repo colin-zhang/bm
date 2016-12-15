@@ -96,7 +96,7 @@ reg_boards_add(master_info_t *mif, board_info_t *bif)
 int
 reg_boards_update(master_info_t *mif, board_info_t *bif)
 {
-    int index = reg_boards_bsearch(mif, bif->slot_id);\
+    int index = reg_boards_bsearch(mif, bif->slot_id);
     if (index < 0) {
         return -1;
     }
@@ -189,14 +189,18 @@ probe_master_hander(void *ptr, void *ptr_self)
     int i = 0;
     int master_slot = 0;
 
-/*    if (SelfBoardInfo->slot_type  == DEV_TYPE_BACKUP) {
-        master_slot = dev_master_group_chief_slotid(rt->master_group);
+    master_slot = dev_master_group_chief_slotid(MasterGroup);
+
+    if (SelfBoardInfo->slot_type  == DEV_TYPE_BACKUP 
+        && master_slot > 0 
+        && master_slot != SelfBoardInfo->slot_id) {
         dev_sent_msg(mif->rt->ofd, master_slot, dev_master_probe(1, 0));
-    } else {*/
-    for (i = 1; i <= 14; i++) {
-         if (i != SelfBoardInfo->slot_id) {
-            dev_sent_msg(mif->rt->ofd, i, dev_master_probe(1, 0));
-         }
+    } else {
+        for (i = 1; i <= 14; i++) {
+             if (i != SelfBoardInfo->slot_id) {
+                dev_sent_msg(mif->rt->ofd, i, dev_master_probe(1, 0));
+             }
+        }
     }
     SelfBoardInfo->uptime = dev_sys_uptime();
     return 0;
@@ -206,14 +210,15 @@ static int
 master_checker(void *ptr, void *ptr_self)
 {
     master_info_t *mif = (master_info_t *)ptr_self;
+    int slot_type = SelfBoardInfo->slot_type;
 
     if (dev_master_group_probe_timeout_check(MasterGroup, 1)) {
         dev_master_group_select_chief(MasterGroup);
     }
 
-    if (SelfBoardInfo->slot_type == DEV_TYPE_MASTER) {
+    if (slot_type == DEV_TYPE_MASTER) {
         reg_boards_check(mif);
-    } else if (SelfBoardInfo->slot_type == DEV_TYPE_TOBE_MASTER) {
+    } else if (slot_type == DEV_TYPE_TOBE_MASTER || slot_type == DEV_TYPE_TOBE_BACKUP) {
         dev_sub_timer_modify_timeout(mif->vote_timer, (double)1.0);
     }
     
@@ -303,6 +308,7 @@ master_disp_probe_ack(master_info_t *mif, char *msg)
 
     board_info_t bif_tmp;
     int ret = 0;
+    int slot_type = SelfBoardInfo->slot_type;
 
     bif_tmp.slot_id = msg_head->slot_id;
     bif_tmp.slot_type = msg_head->slot_type;
@@ -313,15 +319,11 @@ master_disp_probe_ack(master_info_t *mif, char *msg)
     bif_tmp.timeout_chk = 0;
     
     ret = dev_master_group_add(MasterGroup, &bif_tmp);
-    if (bif_tmp.slot_type == DEV_TYPE_TOBE_MASTER) {
+    if (bif_tmp.slot_type == DEV_TYPE_TOBE_MASTER || bif_tmp.slot_type == DEV_TYPE_TOBE_BACKUP) {
         dev_master_group_select_chief(MasterGroup);
-    }
-
-    if (SelfBoardInfo->slot_type == DEV_TYPE_MASTER && bif_tmp.slot_type == DEV_TYPE_MASTER) {
+    } else if (slot_type == DEV_TYPE_MASTER && bif_tmp.slot_type == DEV_TYPE_MASTER) {
         dev_master_group_select_chief(MasterGroup);
-    }
-
-    if (SelfBoardInfo->slot_type == DEV_TYPE_TOBE_MASTER && bif_tmp.slot_type == DEV_TYPE_BACKUP) {
+    } else if (slot_type == DEV_TYPE_TOBE_MASTER || slot_type == DEV_TYPE_TOBE_BACKUP) {
         dev_sub_timer_modify_timeout(mif->vote_timer, 0.5);
     }
 

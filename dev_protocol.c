@@ -125,6 +125,7 @@ dev_heart_beat(int seq)
     return (sizeof(msg_heartbeat_t) + MSG_HEAD_LEN);
 }
 
+/*
 int
 dev_set_master(void)
 {
@@ -132,6 +133,7 @@ dev_set_master(void)
     dev_msg_head(msg, DEV_SET_MASTER, 0);
     return (MSG_HEAD_LEN);
 }
+*/
 
 int
 dev_sent_msg(int fd, int slotid, int msg_len)

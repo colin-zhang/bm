@@ -24,7 +24,6 @@ enum protocol_type
     DEV_HEARTBEAT,
     DEV_REGISTER,
     DEV_REGISTER_ACK,
-    DEV_SET_MASTER,
     DEV_CMD_MAX
 };
 

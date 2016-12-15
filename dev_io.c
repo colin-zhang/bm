@@ -20,6 +20,7 @@ typedef struct io_info
     int rev_buff_len;
     char *rev_buff;
     long state_conter;
+    long register_conter;
 }io_info_t;
 
 extern board_info_t *SelfBoardInfo;
@@ -107,7 +108,10 @@ io_disp_register_ack(io_info_t *ioif, char *msg, int slotid)
     if (msg_head->slot_type == DEV_TYPE_MASTER) {
         if (SelfBoardInfo->slot_type == DEV_TYPE_IO_REG_WAIT) {
             ioif->master_slot = slotid;
+            ioif->register_conter++;
             SelfBoardInfo->master_slotid = slotid;
+            //TODO 
+            //load master_slotid to kernel
             SelfBoardInfo->slot_type = DEV_REGISTER;
             dev_sub_timer_remove(ioif->register_timer);
             printf("regestter, SelfBoardInfo->master_slotid = %d\n", SelfBoardInfo->master_slotid);

@@ -144,6 +144,7 @@ dev_master_group_select(dev_master_group_t *dmg, int *them, int num)
 int
 dev_master_group_chief_slotid(dev_master_group_t *dmg)
 {
+    if (dmg->chief_index < 0) return 0;
     return dmg->member[dmg->chief_index]->slot_id;
 }
 

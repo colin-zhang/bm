@@ -27,6 +27,7 @@ enum board_type
     DEV_TYPE_MASTER_EXP,
     DEV_TYPE_IO_REG_WAIT,
     DEV_TYPE_TOBE_MASTER,
+    DEV_TYPE_TOBE_BACKUP,
 };
 
 typedef struct board_info
